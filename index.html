@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Integrales Paso a Paso - Proyecto Cálculo II</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                            950: '#172554',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- MathJax CDN para renders tipográficos matemáticos -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Math.js para cálculos simbólicos/evaluación -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
+
+    <style>
+        .step-card {
+            transition: all 0.3s ease;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.4);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full flex flex-col font-sans transition-colors duration-200">
+
+    <!-- Navigation Header -->
+    <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-50 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-brand-600 p-2 rounded-lg text-white shadow-md">
+                        <i data-lucide="calculator" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold leading-tight">Proyecto Cálculo II</h1>
+                        <p class="text-xs text-slate-400">Calculadora de Integrales Paso a Paso</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <!-- Dark mode toggle -->
+                    <button id="themeToggle" class="p-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                        <i data-lucide="moon" id="themeIcon" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <nav class="flex space-x-1 overflow-x-auto pb-2 pt-1 border-t border-slate-800 text-sm font-medium scrollbar-none" id="tabsNav">
+                <button onclick="switchTab('inicio')" id="tab-inicio" class="tab-btn active px-4 py-2 rounded-md whitespace-nowrap flex items-center gap-2 text-brand-400 border-b-2 border-brand-500 bg-slate-800/50">
+                    <i data-lucide="home" class="w-4 h-4"></i> Inicio
+                </button>
+                <button onclick="switchTab('promedio')" id="tab-promedio" class="tab-btn px-4 py-2 rounded-md whitespace-nowrap flex items-center gap-2 text-slate-300 hover:text-white hover:bg-slate-800 transition">
+                    <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Valor Promedio
+                </button>
+                <button onclick="switchTab('definida')" id="tab-definida" class="tab-btn px-4 py-2 rounded-md whitespace-nowrap flex items-center gap-2 text-slate-300 hover:text-white hover:bg-slate-800 transition">
+                    <i data-lucide="area-chart" class="w-4 h-4"></i> Integral Definida
+                </button>
+                <button onclick="switchTab('sustitucion')" id="tab-sustitucion" class="tab-btn px-4 py-2 rounded-md whitespace-nowrap flex items-center gap-2 text-slate-300 hover:text-white hover:bg-slate-800 transition">
+                    <i data-lucide="replace" class="w-4 h-4"></i> Sustitución $u$
+                </button>
+                <button onclick="switchTab('partes')" id="tab-partes" class="tab-btn px-4 py-2 rounded-md whitespace-nowrap flex items-center gap-2 text-slate-300 hover:text-white hover:bg-slate-800 transition">
+                    <i data-lucide="split" class="w-4 h-4"></i> Por Partes
+                </button>
+                <button onclick="switchTab('trig')" id="tab-trig" class="tab-btn px-4 py-2 rounded-md whitespace-nowrap flex items-center gap-2 text-slate-300 hover:text-white hover:bg-slate-800 transition">
+                    <i data-lucide="triangle" class="w-4 h-4"></i> Sust. Trigonométrica
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ==================== TAB: INICIO ==================== -->
+        <section id="content-inicio" class="tab-content block space-y-8">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 md:p-8 border border-slate-200 dark:border-slate-700">
+                <div class="text-center max-w-3xl mx-auto mb-10">
+                    <span class="bg-brand-100 text-brand-800 dark:bg-brand-900/50 dark:text-brand-300 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Universidad - Facultad de Ingeniería</span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold mt-3 text-slate-900 dark:text-white">Calculadora Pedagógica de Integrales Paso a Paso</h2>
+                    <p class="text-slate-600 dark:text-slate-300 mt-3 text-lg">
+                        Herramienta interactiva de apoyo didáctico para la resolución formal y demostración de los métodos fundamentales del Cálculo Integral.
+                    </p>
+                </div>
+
+                <div class="border-t border-slate-200 dark:border-slate-700 pt-8">
+                    <h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-brand-600 dark:text-brand-400">
+                        <i data-lucide="users" class="w-6 h-6"></i> Integrantes y Asignación de Temas
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Integrante 1 -->
+                        <div class="bg-slate-50 dark:bg-slate-900/60 p-5 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-sm hover:shadow-md transition">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-blue-500 text-white font-bold flex items-center justify-center text-lg shadow-md">W</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 dark:text-white text-lg">Willian</h4>
+                                    <p class="text-sm font-medium text-brand-600 dark:text-brand-400">Valor Promedio de una Función</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">Fórmula del valor medio, evaluación definida y representación mediante recta horizontal de área equivalente.</p>
+                        </div>
+
+                        <!-- Integrante 2 -->
+                        <div class="bg-slate-50 dark:bg-slate-900/60 p-5 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-sm hover:shadow-md transition">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center text-lg shadow-md">D</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 dark:text-white text-lg">Diego Mejía</h4>
+                                    <p class="text-sm font-medium text-emerald-600 dark:text-emerald-400">Integral Definida</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">Teorema Fundamental del Cálculo, cálculo de antiderivadas y visualización del área bajo la curva.</p>
+                        </div>
+
+                        <!-- Integrante 3 -->
+                        <div class="bg-slate-50 dark:bg-slate-900/60 p-5 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-sm hover:shadow-md transition">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-amber-500 text-white font-bold flex items-center justify-center text-lg shadow-md">G</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 dark:text-white text-lg">Guillermo Vicente</h4>
+                                    <p class="text-sm font-medium text-amber-600 dark:text-amber-400">Método de Sustitución ($u$)</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">Cambio de variable, determinación de diferencial $du$, transformación de la integral y re-sustitución.</p>
+                        </div>
+
+                        <!-- Integrante 4 -->
+                        <div class="bg-slate-50 dark:bg-slate-900/60 p-5 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-sm hover:shadow-md transition">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-purple-500 text-white font-bold flex items-center justify-center text-lg shadow-md">S</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 dark:text-white text-lg">Sharon Alvarado</h4>
+                                    <p class="text-sm font-medium text-purple-600 dark:text-purple-400">Integración por Partes</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">Mnemotecnia LIATE, descomposición $u$ y $dv$, fórmula $\int u \, dv = uv - \int v \, du$.</p>
+                        </div>
+
+                        <!-- Integrante 5 -->
+                        <div class="bg-slate-50 dark:bg-slate-900/60 p-5 rounded-xl border border-slate-200 dark:border-slate-700/80 shadow-sm hover:shadow-md transition lg:col-span-1">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-rose-500 text-white font-bold flex items-center justify-center text-lg shadow-md">J</div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 dark:text-white text-lg">Juan De León</h4>
+                                    <p class="text-sm font-medium text-rose-600 dark:text-rose-400">Sustitución Trigonométrica</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">Resolución de los 3 casos trigonométricos con diagramación dinámica de triángulos rectángulos en SVG.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-10 bg-brand-50 dark:bg-brand-950/40 p-6 rounded-xl border border-brand-200 dark:border-brand-800">
+                    <h4 class="font-bold text-brand-900 dark:text-brand-300 flex items-center gap-2 text-lg mb-2">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-brand-600"></i> Insttrucciones de uso
+                    </h4>
+                    <p class="text-sm text-brand-800 dark:text-brand-300">
+                        Selecciona cualquiera de las pestañas en la barra superior para explorar cada método específico. Cada sección cuenta con sus parámetros personalizables, resolución matemática en notación formal LaTeX paso a paso, explicaciones conceptuales y gráficos explicativos interactivos.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: VALOR PROMEDIO ==================== -->
+        <section id="content-promedio" class="tab-content hidden space-y-6">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4 mb-6">
+                    <div>
+                        <span class="text-xs font-bold text-brand-600 dark:text-brand-400 uppercase tracking-wider">Asignado a: Willian</span>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Valor Promedio de una Función</h2>
+                    </div>
+                    <div class="bg-brand-100 dark:bg-brand-900 text-brand-700 dark:text-brand-300 px-3 py-1 rounded-full text-xs font-semibold">
+                        $f_{prom} = \frac{1}{b-a} \int_a^b f(x)dx$
+                    </div>
+                </div>
+
+                <!-- Form Controls -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Función $f(x)$</label>
+                        <select id="vp-func-select" onchange="updateVPInputs()" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-sm focus:ring-brand-500 focus:border-brand-500">
+                            <option value="x^2">f(x) = x²</option>
+                            <option value="3*x^2 - 2*x + 1">f(x) = 3x² - 2x + 1</option>
+                            <option value="sin(x)">f(x) = sin(x)</option>
+                            <option value="x^3 - x">f(x) = x³ - x</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Límite Inferior ($a$)</label>
+                        <input type="number" id="vp-a" value="0" step="0.5" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Límite Superior ($b$)</label>
+                        <input type="number" id="vp-b" value="3" step="0.5" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-sm">
+                    </div>
+                </div>
+
+                <button onclick="calcularValorPromedio()" class="w-full md:w-auto px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg shadow-md transition flex items-center justify-center gap-2">
+                    <i data-lucide="play" class="w-4 h-4"></i> Calcular y Graficar
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Pasos MathJax -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-700 pb-2 flex items-center gap-2">
+                        <i data-lucide="list-checks" class="w-5 h-5 text-brand-500"></i> Procedimiento Paso a Paso
+                    </h3>
+                    <div id="vp-pasos" class="space-y-4 text-sm text-slate-700 dark:text-slate-300">
+                        <!-- Generado por JS -->
+                    </div>
+                </div>
+
+                <!-- Gráfica Chart.js -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-700 pb-2 flex items-center gap-2">
+                        <i data-lucide="line-chart" class="w-5 h-5 text-brand-500"></i> Gráfica Interactiva
+                    </h3>
+                    <div class="relative w-full h-80">
+                        <canvas id="vpChart"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-3 text-center">
+                        La línea roja horizontal representa el Valor Promedio $f_{prom}$. El área bajo $f_{prom}$ equivale al área bajo $f(x)$ en $[a,b]$.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: INTEGRAL DEFINIDA ==================== -->
+        <section id="content-definida" class="tab-content hidden space-y-6">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4 mb-6">
+                    <div>
+                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Asignado a: Diego Mejía</span>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Integral Definida y Área bajo la Curva</h2>
+                    </div>
+                    <div class="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-full text-xs font-semibold">
+                        $\int_a^b f(x)dx = F(b) - F(a)$
+                    </div>
+                </div>
+
+                <!-- Form Controls -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Función $f(x)$</label>
+                        <select id="def-func-select" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-sm">
+                            <option value="x^2">f(x) = x²</option>
+                            <option value="4 - x^2">f(x) = 4 - x²</option>
+                            <option value="2*x + 1">f(x) = 2x + 1</option>
+                            <option value="cos(x)">f(x) = cos(x)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Límite Inferior ($a$)</label>
+                        <input type="number" id="def-a" value="0" step="0.5" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Límite Superior ($b$)</label>
+                        <input type="number" id="def-b" value="2" step="0.5" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-sm">
+                    </div>
+                </div>
+
+                <button onclick="calcularIntegralDefinida()" class="w-full md:w-auto px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg shadow-md transition flex items-center justify-center gap-2">
+                    <i data-lucide="play" class="w-4 h-4"></i> Calcular Integral Definida
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Pasos MathJax -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-700 pb-2 flex items-center gap-2">
+                        <i data-lucide="file-text" class="w-5 h-5 text-emerald-500"></i> Demostración Teorema Fundamental
+                    </h3>
+                    <div id="def-pasos" class="space-y-4 text-sm text-slate-700 dark:text-slate-300">
+                        <!-- Generado por JS -->
+                    </div>
+                </div>
+
+                <!-- Gráfica Chart.js con Área Rellenada -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-700 pb-2 flex items-center gap-2">
+                        <i data-lucide="area-chart" class="w-5 h-5 text-emerald-500"></i> Visualización del Área
+                    </h3>
+                    <div class="relative w-full h-80">
+                        <canvas id="defChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: METODO SUSTITUCION ==================== -->
+        <section id="content-sustitucion" class="tab-content hidden space-y-6">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4 mb-6">
+                    <div>
+                        <span class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Asignado a: Guillermo Vicente</span>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Método de Integración por Sustitución ($u$-substitution)</h2>
+                    </div>
+                    <div class="bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 px-3 py-1 rounded-full text-xs font-semibold">
+                        $\int f(g(x))g'(x)dx = \int f(u)du$
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Seleccionar Ejemplo Resuelto</label>
+                        <select id="sust-ejemplo-select" onchange="cargarEjemploSustitucion()" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-sm">
+                            <option value="1">Ejemplo 1: ∫ 2x · (x² + 3)⁵ dx</option>
+                            <option value="2">Ejemplo 2: ∫ x · e^(x²) dx</option>
+                            <option value="3">Ejemplo 3: ∫ (3x²) / (x³ + 1) dx</option>
+                            <option value="4">Ejemplo 4: ∫ cos(x) · sin⁴(x) dx</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualizador Interactivo del Procedimiento -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 space-y-6">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-2 flex items-center gap-2">
+                    <i data-lucide="layers" class="w-5 h-5 text-amber-500"></i> Desglose Paso a Paso del Método
+                </h3>
+
+                <div id="sust-pasos-container" class="grid grid-cols-1 gap-4">
+                    <!-- Pasos autogenerados -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: INTEGRACION POR PARTES ==================== -->
+        <section id="content-partes" class="tab-content hidden space-y-6">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4 mb-6">
+                    <div>
+                        <span class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider">Asignado a: Sharon Alvarado</span>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Integración por Partes</h2>
+                    </div>
+                    <div class="bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-xs font-semibold">
+                        $\int u \, dv = u v - \int v \, du$
+                    </div>
+                </div>
+
+                <!-- Explicación LIATE -->
+                <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700 mb-6">
+                    <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+                        <i data-lucide="key" class="w-4 h-4 text-purple-500"></i> Regla de Mnemotecnia: LIATE para elegir $u$
+                    </h4>
+                    <div class="grid grid-cols-5 gap-2 text-center text-xs font-medium">
+                        <div class="p-2 bg-purple-100 dark:bg-purple-900/60 rounded text-purple-800 dark:text-purple-200"><strong>L</strong>ogarítmicas</div>
+                        <div class="p-2 bg-purple-100 dark:bg-purple-900/60 rounded text-purple-800 dark:text-purple-200"><strong>I</strong>nversas trig.</div>
+                        <div class="p-2 bg-purple-100 dark:bg-purple-900/60 rounded text-purple-800 dark:text-purple-200"><strong>A</strong>lgebraicas</div>
+                        <div class="p-2 bg-purple-100 dark:bg-purple-900/60 rounded text-purple-800 dark:text-purple-200"><strong>T</strong>rigonométricas</div>
+                        <div class="p-2 bg-purple-100 dark:bg-purple-900/60 rounded text-purple-800 dark:text-purple-200"><strong>E</strong>xponenciales</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Seleccionar Integral de Ejemplo</label>
+                        <select id="partes-ejemplo-select" onchange="cargarEjemploPartes()" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2.5 text-sm">
+                            <option value="1">∫ x · e^x dx</option>
+                            <option value="2">∫ x · sin(x) dx</option>
+                            <option value="3">∫ ln(x) dx</option>
+                            <option value="4">∫ x² · ln(x) dx</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Procedimiento detallado -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 space-y-6">
+                <h3 class="text-lg font-bold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-700 pb-2 flex items-center gap-2">
+                    <i data-lucide="list-ordered" class="w-5 h-5 text-purple-500"></i> Procedimiento Paso a Paso
+                </h3>
+
+                <div id="partes-pasos-container" class="space-y-4">
+                    <!-- Pasos autogenerados -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB: SUSTITUCION TRIGONOMETRICA ==================== -->
+        <section id="content-trig" class="tab-content hidden space-y-6">
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4 mb-6">
+                    <div>
+                        <span class="text-xs font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">Asignado a: Juan De León</span>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Sustitución Trigonométrica</h2>
+                    </div>
+                </div>
+
+                <!-- Selector de Caso -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <button onclick="seleccionarCasoTrig(1)" id="btn-caso-1" class="p-4 rounded-xl border-2 border-rose-500 bg-rose-50 dark:bg-rose-950/30 text-left transition">
+                        <div class="font-bold text-rose-600 dark:text-rose-400 text-sm">Caso 1: $\sqrt{a^2 - x^2}$</div>
+                        <div class="text-xs text-slate-600 dark:text-slate-400 mt-1">Sustitución: $x = a \sin(\theta)$</div>
+                    </button>
+                    <button onclick="seleccionarCasoTrig(2)" id="btn-caso-2" class="p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-left hover:border-rose-400 transition">
+                        <div class="font-bold text-slate-800 dark:text-slate-200 text-sm">Caso 2: $\sqrt{a^2 + x^2}$</div>
+                        <div class="text-xs text-slate-600 dark:text-slate-400 mt-1">Sustitución: $x = a \tan(\theta)$</div>
+                    </button>
+                    <button onclick="seleccionarCasoTrig(3)" id="btn-caso-3" class="p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-left hover:border-rose-400 transition">
+                        <div class="font-bold text-slate-800 dark:text-slate-200 text-sm">Caso 3: $\sqrt{x^2 - a^2}$</div>
+                        <div class="text-xs text-slate-600 dark:text-slate-400 mt-1">Sustitución: $x = a \sec(\theta)$</div>
+                    </button>
+                </div>
+
+                <!-- Entrada de valor 'a' -->
+                <div class="flex items-center gap-4 mb-4">
+                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Valor de la constante $a$:</label>
+                    <input type="number" id="trig-a-val" value="3" min="1" max="10" class="w-24 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg p-2 text-sm text-center">
+                    <button onclick="actualizarCasoTrig()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-lg text-sm transition">Actualizar Diagrama y Pasos</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Triángulo Rectángulo SVG Dinámico -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 w-full border-b border-slate-200 dark:border-slate-700 pb-2 flex items-center gap-2">
+                        <i data-lucide="triangle" class="w-5 h-5 text-rose-500"></i> Triángulo Rectángulo de Referencia
+                    </h3>
+                    
+                    <div id="svg-triangle-container" class="w-full flex justify-center py-4">
+                        <!-- SVG generado por JS -->
+                    </div>
+
+                    <div id="trig-relaciones" class="w-full mt-4 bg-slate-50 dark:bg-slate-900 p-4 rounded-xl text-xs space-y-2 text-slate-700 dark:text-slate-300">
+                        <!-- Relaciones autogeneradas -->
+                    </div>
+                </div>
+
+                <!-- Pasos del procedimiento -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-700 pb-2 flex items-center gap-2">
+                        <i data-lucide="file-code" class="w-5 h-5 text-rose-500"></i> Desarrollo Algebraico Paso a Paso
+                    </h3>
+
+                    <div id="trig-pasos-container" class="space-y-4 text-sm">
+                        <!-- Generado por JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-center text-xs">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>Proyecto de Cálculo II - Presentación de Métodos de Integración Paso a Paso</p>
+            <p class="mt-1 text-slate-500">Desarrollado para demostración didáctica con LaTeX (MathJax) y Chart.js</p>
+        </div>
+    </footer>
+
+    <!-- LOGIC & SCRIPTS -->
+    <script>
+        // --- ESTADO Y VARIABLES GLOBALES ---
+        let currentTab = 'inicio';
+        let currentTrigCase = 1;
+        let vpChartInstance = null;
+        let defChartInstance = null;
+
+        // Inicialización al cargar la página
+        window.onload = function() {
+            lucide.createIcons();
+            calcularValorPromedio();
+            calcularIntegralDefinida();
+            cargarEjemploSustitucion();
+            cargarEjemploPartes();
+            actualizarCasoTrig();
+
+            // Toggle Dark Mode
+            document.getElementById('themeToggle').addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+            });
+        };
+
+        // Renders MathJax
+        function renderMath() {
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        // Navegación de Pestañas
+        function switchTab(tabId) {
+            currentTab = tabId;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('text-brand-400', 'border-b-2', 'border-brand-500', 'bg-slate-800/50');
+                btn.classList.add('text-slate-300');
+            });
+
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('text-brand-400', 'border-b-2', 'border-brand-500', 'bg-slate-800/50');
+                activeBtn.classList.remove('text-slate-300');
+            }
+
+            renderMath();
+        }
+
+        // ==========================================
+        // METODO 1: VALOR PROMEDIO (Willian)
+        // ==========================================
+        function updateVPInputs() {
+            calcularValorPromedio();
+        }
+
+        function calcularValorPromedio() {
+            const funcStr = document.getElementById('vp-func-select').value;
+            const a = parseFloat(document.getElementById('vp-a').value);
+            const b = parseFloat(document.getElementById('vp-b').value);
+
+            if (a >= b) {
+                document.getElementById('vp-pasos').innerHTML = '<span class="text-red-500 font-semibold">Error: El límite inferior $a$ debe ser menor que $b$.</span>';
+                renderMath();
+                return;
+            }
+
+            // Evaluación numérica aproximada de la integral
+            const n = 100;
+            const h = (b - a) / n;
+            let sum = 0;
+            const expr = math.compile(funcStr);
+
+            for (let i = 0; i <= n; i++) {
+                const x = a + i * h;
+                const weight = (i === 0 || i === n) ? 1 : (i % 2 === 1 ? 4 : 2);
+                sum += weight * expr.evaluate({x: x});
+            }
+            const integralVal = (h / 3) * sum;
+            const vPromedio = integralVal / (b - a);
+
+            // Generar Pasos LaTeX
+            let pasosHTML = `
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-brand-600 dark:text-brand-400 text-xs uppercase">Paso 1: Identificar la Fórmula</h4>
+                    <p class="mt-1">La fórmula del valor promedio para $f(x)$ en $[a,b]$ es:</p>
+                    <p class="my-2 font-mono text-center">$$f_{prom} = \\frac{1}{b - a} \\int_{a}^{b} f(x) \, dx$$</p>
+                </div>
+
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-brand-600 dark:text-brand-400 text-xs uppercase">Paso 2: Sustituir Valores y Definir Integral</h4>
+                    <p class="mt-1">Para $a = ${a}$, $b = ${b}$ y $f(x) = ${funcStr}$:</p>
+                    <p class="my-2 font-mono text-center">$$f_{prom} = \\frac{1}{${b} - (${a})} \\int_{${a}}^{${b}} (${funcStr}) \, dx$$</p>
+                    <p class="my-1 font-mono text-center">$$f_{prom} = \\frac{1}{${(b - a).toFixed(2)}} \\int_{${a}}^{${b}} (${funcStr}) \, dx$$</p>
+                </div>
+
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-brand-600 dark:text-brand-400 text-xs uppercase">Paso 3: Evaluar Integral Definida</h4>
+                    <p class="mt-1">El valor del área bajo la curva obtenida mediante integración es:</p>
+                    <p class="my-2 font-mono text-center">$$\\int_{${a}}^{${b}} (${funcStr}) \, dx \\approx ${integralVal.toFixed(4)}$$</p>
+                </div>
+
+                <div class="step-card bg-brand-50 dark:bg-brand-950/40 p-4 rounded-xl border border-brand-200 dark:border-brand-800">
+                    <h4 class="font-bold text-brand-700 dark:text-brand-300 text-xs uppercase">Resultado Final: Valor Promedio</h4>
+                    <p class="my-2 font-mono text-center text-lg font-bold text-brand-600 dark:text-brand-400">
+                        $$f_{prom} = \\frac{${integralVal.toFixed(4)}}{${(b - a).toFixed(2)}} = ${vPromedio.toFixed(4)}$$
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('vp-pasos').innerHTML = pasosHTML;
+            renderMath();
+
+            // Renderizar Gráfica
+            graficarValorPromedio(funcStr, a, b, vPromedio);
+        }
+
+        function graficarValorPromedio(funcStr, a, b, vPromedio) {
+            const ctx = document.getElementById('vpChart').getContext('2d');
+            if (vpChartInstance) vpChartInstance.destroy();
+
+            const labels = [];
+            const dataFunc = [];
+            const dataProm = [];
+            const expr = math.compile(funcStr);
+
+            const padding = (b - a) * 0.2 || 1;
+            const minX = a - padding;
+            const maxX = b + padding;
+            const step = (maxX - minX) / 50;
+
+            for (let x = minX; x <= maxX; x += step) {
+                labels.push(x.toFixed(2));
+                dataFunc.push(expr.evaluate({x: x}));
+                dataProm.push((x >= a && x <= b) ? vPromedio : null);
+            }
+
+            vpChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'f(x)',
+                            data: dataFunc,
+                            borderColor: '#3b82f6',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            fill: false
+                        },
+                        {
+                            label: 'Valor Promedio f_prom',
+                            data: dataProm,
+                            borderColor: '#ef4444',
+                            borderWidth: 2.5,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { color: 'rgba(150, 150, 150, 0.1)' } },
+                        y: { grid: { color: 'rgba(150, 150, 150, 0.1)' } }
+                    }
+                }
+            });
+        }
+
+        // ==========================================
+        // METODO 2: INTEGRAL DEFINIDA (Diego Mejía)
+        // ==========================================
+        function calcularIntegralDefinida() {
+            const funcStr = document.getElementById('def-func-select').value;
+            const a = parseFloat(document.getElementById('def-a').value);
+            const b = parseFloat(document.getElementById('def-b').value);
+
+            let antiderivadaTex = '';
+            let antiderivadaExpr = null;
+
+            if (funcStr === 'x^2') {
+                antiderivadaTex = '\\frac{x^3}{3}';
+                antiderivadaExpr = (x) => Math.pow(x, 3) / 3;
+            } else if (funcStr === '4 - x^2') {
+                antiderivadaTex = '4x - \\frac{x^3}{3}';
+                antiderivadaExpr = (x) => 4 * x - Math.pow(x, 3) / 3;
+            } else if (funcStr === '2*x + 1') {
+                antiderivadaTex = 'x^2 + x';
+                antiderivadaExpr = (x) => Math.pow(x, 2) + x;
+            } else if (funcStr === 'cos(x)') {
+                antiderivadaTex = '\\sin(x)';
+                antiderivadaExpr = (x) => Math.sin(x);
+            }
+
+            const Fb = antiderivadaExpr(b);
+            const Fa = antiderivadaExpr(a);
+            const resultado = Fb - Fa;
+
+            let pasosHTML = `
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-emerald-600 dark:text-emerald-400 text-xs uppercase">Paso 1: Encontrar la Antiderivada $F(x)$</h4>
+                    <p class="mt-1">Calculamos la integral indefinida de $f(x) = ${funcStr}$:</p>
+                    <p class="my-2 font-mono text-center">$$F(x) = \\int (${funcStr}) \, dx = ${antiderivadaTex} + C$$</p>
+                </div>
+
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-emerald-600 dark:text-emerald-400 text-xs uppercase">Paso 2: Aplicar el Teorema Fundamental del Cálculo</h4>
+                    <p class="mt-1">Evaluamos $F(x)$ en los límites superior $b = ${b}$ e inferior $a = ${a}$:</p>
+                    <p class="my-2 font-mono text-center">$$\\int_{${a}}^{${b}} (${funcStr}) \, dx = \\left[ ${antiderivadaTex} \\right]_{${a}}^{${b}} = F(${b}) - F(${a})$$</p>
+                </div>
+
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-emerald-600 dark:text-emerald-400 text-xs uppercase">Paso 3: Sustitución de Límites</h4>
+                    <p class="my-1 font-mono text-center">$$F(${b}) = ${Fb.toFixed(4)}$$</p>
+                    <p class="my-1 font-mono text-center">$$F(${a}) = ${Fa.toFixed(4)}$$</p>
+                </div>
+
+                <div class="step-card bg-emerald-50 dark:bg-emerald-950/40 p-4 rounded-xl border border-emerald-200 dark:border-emerald-800">
+                    <h4 class="font-bold text-emerald-700 dark:text-emerald-300 text-xs uppercase">Resultado Final: Área bajo la Curva</h4>
+                    <p class="my-2 font-mono text-center text-lg font-bold text-emerald-600 dark:text-emerald-400">
+                        $$\\int_{${a}}^{${b}} (${funcStr}) \, dx = ${Fb.toFixed(4)} - (${Fa.toFixed(4)}) = ${resultado.toFixed(4)}$$
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('def-pasos').innerHTML = pasosHTML;
+            renderMath();
+
+            graficarIntegralDefinida(funcStr, a, b);
+        }
+
+        function graficarIntegralDefinida(funcStr, a, b) {
+            const ctx = document.getElementById('defChart').getContext('2d');
+            if (defChartInstance) defChartInstance.destroy();
+
+            const labels = [];
+            const dataFunc = [];
+            const dataArea = [];
+            const expr = math.compile(funcStr);
+
+            const padding = (b - a) * 0.3 || 1;
+            const minX = a - padding;
+            const maxX = b + padding;
+            const step = (maxX - minX) / 60;
+
+            for (let x = minX; x <= maxX; x += step) {
+                labels.push(x.toFixed(2));
+                const val = expr.evaluate({x: x});
+                dataFunc.push(val);
+                dataArea.push((x >= a && x <= b) ? val : null);
+            }
+
+            defChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'f(x)',
+                            data: dataFunc,
+                            borderColor: '#10b981',
+                            borderWidth: 2,
+                            pointRadius: 0,
+                            fill: false
+                        },
+                        {
+                            label: 'Área bajo la curva',
+                            data: dataArea,
+                            backgroundColor: 'rgba(16, 185, 129, 0.25)',
+                            borderColor: 'transparent',
+                            pointRadius: 0,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { color: 'rgba(150, 150, 150, 0.1)' } },
+                        y: { grid: { color: 'rgba(150, 150, 150, 0.1)' } }
+                    }
+                }
+            });
+        }
+
+        // ==========================================
+        // METODO 3: METODO DE SUSTITUCION u (Guillermo)
+        // ==========================================
+        const ejemplosSustitucion = {
+            "1": {
+                integral: "\\int 2x(x^2 + 3)^5 \, dx",
+                paso1_u: "u = x^2 + 3",
+                paso2_du: "du = 2x \, dx \\implies dx = \\frac{du}{2x}",
+                paso3_sub: "\\int 2x \\cdot u^5 \\cdot \\frac{du}{2x} = \\int u^5 \, du",
+                paso4_int: "\\int u^5 \, du = \\frac{u^6}{6} + C",
+                paso5_res: "\\frac{(x^2 + 3)^6}{6} + C"
+            },
+            "2": {
+                integral: "\\int x e^{x^2} \, dx",
+                paso1_u: "u = x^2",
+                paso2_du: "du = 2x \, dx \\implies x \, dx = \\frac{du}{2}",
+                paso3_sub: "\\int e^u \\cdot \\frac{du}{2} = \\frac{1}{2} \\int e^u \, du",
+                paso4_int: "\\frac{1}{2} e^u + C",
+                paso5_res: "\\frac{1}{2} e^{x^2} + C"
+            },
+            "3": {
+                integral: "\\int \\frac{3x^2}{x^3 + 1} \, dx",
+                paso1_u: "u = x^3 + 1",
+                paso2_du: "du = 3x^2 \, dx",
+                paso3_sub: "\\int \\frac{1}{u} \, du",
+                paso4_int: "\\ln|u| + C",
+                paso5_res: "\\ln|x^3 + 1| + C"
+            },
+            "4": {
+                integral: "\\int \\cos(x) \\sin^4(x) \, dx",
+                paso1_u: "u = \\sin(x)",
+                paso2_du: "du = \\cos(x) \, dx",
+                paso3_sub: "\\int u^4 \, du",
+                paso4_int: "\\frac{u^5}{5} + C",
+                paso5_res: "\\frac{\\sin^5(x)}{5} + C"
+            }
+        };
+
+        function cargarEjemploSustitucion() {
+            const val = document.getElementById('sust-ejemplo-select').value;
+            const data = ejemplosSustitucion[val];
+
+            const html = `
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-amber-600 dark:text-amber-400 text-xs uppercase">Integral Original</h4>
+                    <p class="my-2 font-mono text-center text-lg">$$${data.integral}$$</p>
+                </div>
+
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-amber-600 dark:text-amber-400 text-xs uppercase">Paso 1: Elección de la variable $u$</h4>
+                    <p class="mt-1">Seleccionamos la función interna como $u$:</p>
+                    <p class="my-2 font-mono text-center text-md">$$${data.paso1_u}$$</p>
+                </div>
+
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-amber-600 dark:text-amber-400 text-xs uppercase">Paso 2: Cálculo del Diferencial $du$</h4>
+                    <p class="mt-1">Derivamos $u$ con respecto a $x$:</p>
+                    <p class="my-2 font-mono text-center text-md">$$${data.paso2_du}$$</p>
+                </div>
+
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-amber-600 dark:text-amber-400 text-xs uppercase">Paso 3: Sustitución en la Integral</h4>
+                    <p class="mt-1">Reemplazamos $x$ y $dx$ por expresiones en términos de $u$:</p>
+                    <p class="my-2 font-mono text-center text-md">$$${data.paso3_sub}$$</p>
+                </div>
+
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-amber-600 dark:text-amber-400 text-xs uppercase">Paso 4: Integración respecto a $u$</h4>
+                    <p class="my-2 font-mono text-center text-md">$$${data.paso4_int}$$</p>
+                </div>
+
+                <div class="step-card bg-amber-50 dark:bg-amber-950/40 p-4 rounded-xl border border-amber-200 dark:border-amber-800">
+                    <h4 class="font-bold text-amber-700 dark:text-amber-300 text-xs uppercase">Paso 5: Re-sustitución Final a la variable $x$</h4>
+                    <p class="my-2 font-mono text-center text-lg font-bold text-amber-600 dark:text-amber-400">
+                        $$${data.integral} = ${data.paso5_res}$$
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('sust-pasos-container').innerHTML = html;
+            renderMath();
+        }
+
+        // ==========================================
+        // METODO 4: INTEGRACION POR PARTES (Sharon)
+        // ==========================================
+        const ejemplosPartes = {
+            "1": {
+                integral: "\\int x e^x \, dx",
+                u: "u = x",
+                dv: "dv = e^x \, dx",
+                du: "du = dx",
+                v: "v = e^x",
+                formula: "u v - \\int v \, du = x e^x - \\int e^x \, dx",
+                resultado: "x e^x - e^x + C = e^x(x - 1) + C"
+            },
+            "2": {
+                integral: "\\int x \\sin(x) \, dx",
+                u: "u = x",
+                dv: "dv = \\sin(x) \, dx",
+                du: "du = dx",
+                v: "v = -\\cos(x)",
+                formula: "x(-\\cos(x)) - \\int -\\cos(x) \, dx",
+                resultado: "-x \\cos(x) + \\sin(x) + C"
+            },
+            "3": {
+                integral: "\\int \\ln(x) \, dx",
+                u: "u = \\ln(x)",
+                dv: "dv = dx",
+                du: "du = \\frac{1}{x} \, dx",
+                v: "v = x",
+                formula: "x \\ln(x) - \\int x \\cdot \\frac{1}{x} \, dx = x \\ln(x) - \\int 1 \, dx",
+                resultado: "x \\ln(x) - x + C"
+            },
+            "4": {
+                integral: "\\int x^2 \\ln(x) \, dx",
+                u: "u = \\ln(x)",
+                dv: "dv = x^2 \, dx",
+                du: "du = \\frac{1}{x} \, dx",
+                v: "v = \\frac{x^3}{3}",
+                formula: "\\frac{x^3}{3} \\ln(x) - \\int \\frac{x^3}{3} \\cdot \\frac{1}{x} \, dx = \\frac{x^3}{3} \\ln(x) - \\frac{1}{3} \\int x^2 \, dx",
+                resultado: "\\frac{x^3}{3} \\ln(x) - \\frac{x^3}{9} + C"
+            }
+        };
+
+        function cargarEjemploPartes() {
+            const val = document.getElementById('partes-ejemplo-select').value;
+            const data = ejemplosPartes[val];
+
+            const html = `
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-purple-600 dark:text-purple-400 text-xs uppercase">Integral a Resolver</h4>
+                    <p class="my-2 font-mono text-center text-lg">$$${data.integral}$$</p>
+                </div>
+
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-purple-600 dark:text-purple-400 text-xs uppercase">Paso 1: Elección de $u$ y $dv$ (Criterio LIATE)</h4>
+                    <div class="grid grid-cols-2 gap-4 my-2 text-center font-mono">
+                        <div class="p-2 bg-purple-50 dark:bg-purple-950/40 rounded border border-purple-200 dark:border-purple-800">$$${data.u}$$</div>
+                        <div class="p-2 bg-purple-50 dark:bg-purple-950/40 rounded border border-purple-200 dark:border-purple-800">$$${data.dv}$$</div>
+                    </div>
+                </div>
+
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-purple-600 dark:text-purple-400 text-xs uppercase">Paso 2: Derivar $u$ e Integrar $dv$</h4>
+                    <div class="grid grid-cols-2 gap-4 my-2 text-center font-mono">
+                        <div class="p-2 bg-slate-100 dark:bg-slate-800 rounded">$$${data.du}$$</div>
+                        <div class="p-2 bg-slate-100 dark:bg-slate-800 rounded">$$${data.v}$$</div>
+                    </div>
+                </div>
+
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-purple-600 dark:text-purple-400 text-xs uppercase">Paso 3: Aplicar Fórmula $\\int u \, dv = u v - \\int v \, du$</h4>
+                    <p class="my-2 font-mono text-center text-md">$$${data.formula}$$</p>
+                </div>
+
+                <div class="step-card bg-purple-50 dark:bg-purple-950/40 p-4 rounded-xl border border-purple-200 dark:border-purple-800">
+                    <h4 class="font-bold text-purple-700 dark:text-purple-300 text-xs uppercase">Resultado Final</h4>
+                    <p class="my-2 font-mono text-center text-lg font-bold text-purple-600 dark:text-purple-400">
+                        $$${data.integral} = ${data.resultado}$$
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('partes-pasos-container').innerHTML = html;
+            renderMath();
+        }
+
+        // ==========================================
+        // METODO 5: SUSTITUCION TRIGONOMETRICA (Juan De León)
+        // ==========================================
+        function seleccionarCasoTrig(caso) {
+            currentTrigCase = caso;
+            for (let i = 1; i <= 3; i++) {
+                const btn = document.getElementById(`btn-caso-${i}`);
+                if (i === caso) {
+                    btn.className = "p-4 rounded-xl border-2 border-rose-500 bg-rose-50 dark:bg-rose-950/30 text-left transition";
+                } else {
+                    btn.className = "p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-left hover:border-rose-400 transition";
+                }
+            }
+            actualizarCasoTrig();
+        }
+
+        function actualizarCasoTrig() {
+            const a = parseFloat(document.getElementById('trig-a-val').value) || 3;
+            const a2 = a * a;
+
+            let hipotenusa = "", catetoOpp = "", catetoAdj = "", integralEx = "", sustX = "", dxExpr = "", radExpr = "";
+
+            if (currentTrigCase === 1) {
+                // sqrt(a^2 - x^2)
+                hipotenusa = `${a}`;
+                catetoOpp = "x";
+                catetoAdj = `\\sqrt{${a2} - x^2}`;
+                integralEx = `\\int \\sqrt{${a2} - x^2} \, dx`;
+                sustX = `x = ${a} \\sin(\\theta)`;
+                dxExpr = `dx = ${a} \\cos(\\theta) \, d\\theta`;
+                radExpr = `\\sqrt{${a2} - x^2} = ${a} \\cos(\\theta)`;
+            } else if (currentTrigCase === 2) {
+                // sqrt(a^2 + x^2)
+                hipotenusa = `\\sqrt{${a2} + x^2}`;
+                catetoOpp = "x";
+                catetoAdj = `${a}`;
+                integralEx = `\\int \\frac{1}{\\sqrt{${a2} + x^2}} \, dx`;
+                sustX = `x = ${a} \\tan(\\theta)`;
+                dxExpr = `dx = ${a} \\sec^2(\\theta) \, d\\theta`;
+                radExpr = `\\sqrt{${a2} + x^2} = ${a} \\sec(\\theta)`;
+            } else {
+                // sqrt(x^2 - a^2)
+                hipotenusa = "x";
+                catetoOpp = `\\sqrt{x^2 - ${a2}}`;
+                catetoAdj = `${a}`;
+                integralEx = `\\int \\frac{\\sqrt{x^2 - ${a2}}}{x} \, dx`;
+                sustX = `x = ${a} \\sec(\\theta)`;
+                dxExpr = `dx = ${a} \\sec(\\theta)\\tan(\\theta) \, d\\theta`;
+                radExpr = `\\sqrt{x^2 - ${a2}} = ${a} \\tan(\\theta)`;
+            }
+
+            // Generar SVG del Triángulo
+            const svgHTML = `
+                <svg width="240" height="180" viewBox="0 0 240 180" class="overflow-visible">
+                    <polygon points="40,140 200,140 200,30" fill="rgba(244, 63, 94, 0.1)" stroke="#f43f5e" stroke-width="3" />
+                    <rect x="180" y="120" width="20" height="20" fill="none" stroke="#f43f5e" stroke-width="2" />
+                    <!-- Angulo Theta -->
+                    <path d="M 70 140 A 30 30 0 0 0 65 125" fill="none" stroke="#64748b" stroke-width="2" />
+                    <text x="75" y="132" font-size="14" font-weight="bold" fill="#f43f5e">θ</text>
+                    
+                    <!-- Lados -->
+                    <!-- Cateto Adyacente (Base) -->
+                    <text x="120" y="162" font-size="13" text-anchor="middle" font-weight="bold" fill="currentColor" class="text-slate-700 dark:text-slate-200">$${catetoAdj}$</text>
+                    <!-- Cateto Opuesto (Altura) -->
+                    <text x="215" y="90" font-size="13" text-anchor="start" font-weight="bold" fill="currentColor" class="text-slate-700 dark:text-slate-200">$${catetoOpp}$</text>
+                    <!-- Hipotenusa -->
+                    <text x="110" y="75" font-size="13" text-anchor="end" font-weight="bold" fill="currentColor" class="text-slate-700 dark:text-slate-200">$${hipotenusa}$</text>
+                </svg>
+            `;
+
+            document.getElementById('svg-triangle-container').innerHTML = svgHTML;
+
+            // Relaciones Trigonométricas
+            document.getElementById('trig-relaciones').innerHTML = `
+                <div class="font-bold text-slate-800 dark:text-slate-200 border-b pb-1 mb-2">Relaciones del Triángulo:</div>
+                <div>• Sustitución: $${sustX}$</div>
+                <div>• Diferencial: $${dxExpr}$</div>
+                <div>• Radical simplificado: $${radExpr}$</div>
+            `;
+
+            // Pasos del procedimiento
+            const pasosHTML = `
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-rose-600 dark:text-rose-400 text-xs uppercase">Ejemplo Representativo</h4>
+                    <p class="my-2 font-mono text-center text-lg">$$${integralEx}$$</p>
+                </div>
+
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-rose-600 dark:text-rose-400 text-xs uppercase">Paso 1: Definir Sustitución Trigonométrica</h4>
+                    <p class="my-2 font-mono text-center">$$${sustX}$$</p>
+                    <p class="my-2 font-mono text-center">$$${dxExpr}$$</p>
+                </div>
+
+                <div class="step-card bg-slate-50 dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                    <h4 class="font-bold text-rose-600 dark:text-rose-400 text-xs uppercase">Paso 2: Sustituir en la Integral y Simplificar</h4>
+                    <p class="my-2 font-mono text-center">$$\\text{Usando la identidad fundamental } \\sin^2(\\theta) + \\cos^2(\\theta) = 1$$</p>
+                    <p class="my-2 font-mono text-center">$$${radExpr}$$</p>
+                </div>
+
+                <div class="step-card bg-rose-50 dark:bg-rose-950/40 p-4 rounded-xl border border-rose-200 dark:border-rose-800">
+                    <h4 class="font-bold text-rose-700 dark:text-rose-300 text-xs uppercase">Paso 3: Integrar en $\\theta$ y Retornar a la variable $x$</h4>
+                    <p class="mt-1 text-xs">Utilizando el triángulo rectángulo mostrado a la izquierda para expresar las funciones de $\\theta$ en términos de $x$.</p>
+                </div>
+            `;
+
+            document.getElementById('trig-pasos-container').innerHTML = pasosHTML;
+            renderMath();
+        }
+    </script>
+</body>
+</html>
