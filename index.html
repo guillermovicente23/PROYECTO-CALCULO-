@@ -1,330 +1,1641 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Proyecto CÁLCULO I - Calculadora de Límites</title>
-
-  <!-- MathJax para el renderizado de fórmulas LaTeX -->
-  <script id="mathjax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-
-  <!-- Biblioteca mathjs para evaluar expresiones matemáticas -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background-color: #f4f6f9;
-      color: #333;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 850px;
-      margin: 0 auto;
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 25px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    }
-
-    h1 {
-      text-align: center;
-      color: #1a365d;
-      margin-bottom: 20px;
-      font-size: 1.8rem;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 5px;
-      color: #2d3748;
-    }
-
-    input[type="text"], input[type="number"] {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #cbd5e0;
-      border-radius: 6px;
-      font-size: 1rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    input[type="text"]:focus, input[type="number"]:focus {
-      border-color: #3182ce;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #2b6cb0;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background-color: #2c5282;
-    }
-
-    /* Estilos del Procedimiento Extenso Estilo Clase */
-    .procedimiento-contenedor {
-      margin-top: 30px;
-      background-color: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-left: 6px solid #2b6cb0;
-      border-radius: 8px;
-      padding: 20px;
-      display: none;
-    }
-
-    .paso-bloque {
-      margin-bottom: 22px;
-      padding-bottom: 15px;
-      border-bottom: 1px dashed #cbd5e0;
-    }
-
-    .paso-bloque:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-    }
-
-    .paso-titulo {
-      color: #1a365d;
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin-bottom: 10px;
-      border-bottom: 2px solid #edf2f7;
-      padding-bottom: 4px;
-    }
-
-    .nota-lateral {
-      background-color: #fffaf0;
-      border-left: 4px solid #dd6b20;
-      padding: 10px 14px;
-      margin: 10px 0;
-      font-size: 0.93rem;
-      color: #7b341e;
-      border-radius: 0 4px 4px 0;
-    }
-
-    .tabla-procedimiento {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 12px 0;
-      font-size: 0.95rem;
-    }
-
-    .tabla-procedimiento th, .tabla-procedimiento td {
-      border: 1px solid #cbd5e0;
-      padding: 10px;
-      text-align: center;
-    }
-
-    .tabla-procedimiento th {
-      background-color: #ebf8ff;
-      color: #2b6cb0;
-    }
-
-    .caja-resultado-final {
-      background-color: #f0fff4;
-      border: 2px solid #38a169;
-      padding: 15px;
-      border-radius: 8px;
-      text-align: center;
-      font-size: 1.25rem;
-      font-weight: bold;
-      color: #22543d;
-      margin-top: 15px;
-    }
-
-    .error-box {
-      color: #e53e3e;
-      background-color: #fff5f5;
-      padding: 10px;
-      border: 1px solid #feb2b2;
-      border-radius: 6px;
-      margin-top: 15px;
-      display: none;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Integrales y Métodos - Proyecto Cálculo II</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- MathJax for LaTeX Rendering -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- Chart.js para visualización de gráficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- mathjs para evaluación de funciones -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .math-code { font-family: 'Fira Code', monospace; }
+        .step-card {
+            border-left: 4px solid #3b82f6;
+            transition: all 0.2s ease-in-out;
+        }
+        .step-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px -5px rgba(59, 130, 246, 0.15);
+        }
+        .math-btn {
+            transition: all 0.15s ease;
+        }
+        .math-btn:hover {
+            transform: scale(1.05);
+        }
+        .math-btn:active {
+            transform: scale(0.95);
+        }
+        /* Estilo Cuaderno / Apuntes Académicos */
+        .notebook-box {
+            background-color: #0f172a;
+            border: 1.5px dashed #f43f5e;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+        }
+        .red-highlight {
+            border: 1.5px solid #ef4444;
+            color: #f87171;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .response-box {
+            border: 2px solid #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
 
-  <div class="container">
-    <h1>Proyecto CÁLCULO I - Aproximación de Límites</h1>
-
-    <div class="form-group">
-      <label for="funcion">Función f(x):</label>
-      <input type="text" id="funcion" placeholder="Ej: (x^2 - 9) / (x - 3)">
-    </div>
-
-    <div class="form-group">
-      <label for="punto">Punto Límite (x → a):</label>
-      <input type="number" id="punto" step="any" placeholder="Ej: 3">
-    </div>
-
-    <button onclick="calcularLimite()">Calcular y Generar Procedimiento Paso a Paso</button>
-
-    <div id="error" class="error-box"></div>
-
-    <!-- Contenedor del procedimiento detallado -->
-    <div id="procedimiento" class="procedimiento-contenedor"></div>
-  </div>
-
-  <script>
-    function evaluarFuncion(expr, xVal) {
-      try {
-        return math.evaluate(expr, { x: xVal });
-      } catch (e) {
-        return NaN;
-      }
-    }
-
-    function convertirALaTeX(expr) {
-      try {
-        const node = math.parse(expr);
-        return node.toTex();
-      } catch (e) {
-        return expr;
-      }
-    }
-
-    function calcularLimite() {
-      const exprInput = document.getElementById('funcion').value.trim();
-      const puntoInput = parseFloat(document.getElementById('punto').value);
-      const divError = document.getElementById('error');
-      const divProc = document.getElementById('procedimiento');
-
-      divError.style.display = 'none';
-      divError.innerHTML = '';
-
-      if (!exprInput || isNaN(puntoInput)) {
-        divError.style.display = 'block';
-        divError.innerHTML = 'Por favor, ingresa una función válida y el punto límite.';
-        divProc.style.display = 'none';
-        return;
-      }
-
-      const a = puntoInput;
-      const funcionTex = convertirALaTeX(exprInput);
-
-      // Evaluación Directa
-      const evalDirecta = evaluarFuncion(exprInput, a);
-      let evalDirectaStr = "";
-      let esIndeterminado = false;
-
-      if (isNaN(evalDirecta) || !isFinite(evalDirecta)) {
-        evalDirectaStr = "\\text{Indeterminado } \\left(\\frac{0}{0} \\text{ o } \\infty\\right)";
-        esIndeterminado = true;
-      } else {
-        evalDirectaStr = evalDirecta.toFixed(4);
-      }
-
-      // Tabla de aproximación numérica en 3 puntos
-      const h = [0.1, 0.01, 0.001];
-      let filasHTML = "";
-      let ultIzquierda = 0;
-      let ultDerecha = 0;
-
-      for (let i = 0; i < h.length; i++) {
-        const xIzq = a - h[i];
-        const yIzq = evaluarFuncion(exprInput, xIzq);
-        
-        const xDerecha = a + h[i];
-        const yDerecha = evaluarFuncion(exprInput, xDerecha);
-
-        ultIzquierda = yIzq;
-        ultDerecha = yDerecha;
-
-        filasHTML += `
-          <tr>
-            <td>${xIzq.toFixed(4)}</td>
-            <td>${isNaN(yIzq) ? 'Indef.' : yIzq.toFixed(6)}</td>
-            <td>${xDerecha.toFixed(4)}</td>
-            <td>${isNaN(yDerecha) ? 'Indef.' : yDerecha.toFixed(6)}</td>
-          </tr>
-        `;
-      }
-
-      const limiteEstimado = ((ultIzquierda + ultDerecha) / 2).toFixed(4);
-
-      // Generación del desglose completo estilo cuaderno de clase
-      const htmlProcedimiento = `
-        <div class="paso-bloque">
-          <div class="paso-titulo">1. Declaración e Identificación Formal del Límite</div>
-          <p>Se plantea la evaluación del siguiente límite en el punto indicado:</p>
-          <p style="text-align: center; margin: 10px 0;">$$\\lim_{x \\to ${a}} \\left( ${funcionTex} \\right)$$</p>
-        </div>
-
-        <div class="paso-bloque">
-          <div class="paso-titulo">2. Evaluación Directa (Prueba de Indeterminación)</div>
-          <p>Sustituyendo $$x = ${a}$$ de forma directa en la función:</p>
-          <p style="text-align: center; margin: 10px 0;">$$f(${a}) = ${evalDirectaStr}$$</p>
-          ${esIndeterminado ? `
-            <div class="nota-lateral">
-              <b>Nota de Clase:</b> Se genera una forma indeterminada. Por consiguiente, se aplica el análisis mediante aproximación lateral izquierda ($x < a$) y derecha ($x > a$) en tres puntos de tabulación progresiva.
+    <!-- Header / Navbar -->
+    <header class="bg-slate-800/90 backdrop-blur-md border-b border-slate-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/30">
+                    $\int$
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-blue-400 via-indigo-300 to-emerald-400 bg-clip-text text-transparent">Calculadora de Integrales</h1>
+                    <p class="text-xs text-slate-400">Proyecto Académico - Cálculo II (Procedimientos Paso a Paso)</p>
+                </div>
             </div>
-          ` : ''}
+            
+            <div class="flex items-center gap-2 overflow-x-auto max-w-full pb-1 md:pb-0 text-xs">
+                <span class="bg-slate-700/60 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-600/50 flex items-center gap-1.5 font-medium">
+                    <i class="fa-solid fa-graduation-cap text-blue-400"></i> Proyecto Integrador de Cálculo
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- Banner de Integrantes -->
+        <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 shadow-md">
+            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-users text-indigo-400"></i> Equipo de Trabajo & Asignación de Métodos:
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 text-xs">
+                <div class="bg-slate-900/80 p-2 rounded-xl border border-blue-500/30 text-center">
+                    <span class="font-bold text-blue-400 block">1. Valor Promedio</span>
+                    <span class="text-slate-200">Willian Valencia</span>
+                </div>
+                <div class="bg-slate-900/80 p-2 rounded-xl border border-emerald-500/30 text-center">
+                    <span class="font-bold text-emerald-400 block">2. Integral Definida</span>
+                    <span class="text-slate-200">Diego Mejía</span>
+                </div>
+                <div class="bg-slate-900/80 p-2 rounded-xl border border-purple-500/30 text-center">
+                    <span class="font-bold text-purple-400 block">3. Sustitución</span>
+                    <span class="text-slate-200">Guillermo Vicente</span>
+                </div>
+                <div class="bg-slate-900/80 p-2 rounded-xl border border-amber-500/30 text-center">
+                    <span class="font-bold text-amber-400 block">4. Por Partes</span>
+                    <span class="text-slate-200">Sharon Alvarado</span>
+                </div>
+                <div class="bg-slate-900/80 p-2 rounded-xl border border-rose-500/30 text-center">
+                    <span class="font-bold text-rose-400 block">5. Sust. Trigonométrica</span>
+                    <span class="text-slate-200">Juan De León</span>
+                </div>
+            </div>
         </div>
 
-        <div class="paso-bloque">
-          <div class="paso-titulo">3. Construcción de Tabla de Aproximación en 3 Puntos</div>
-          <p>Tabulando valores infinitesimalmente cercanos al límite central $$a = ${a}$$:</p>
-          <table class="tabla-procedimiento">
-            <thead>
-              <tr>
-                <th>Izquierda ($x < ${a}$)</th>
-                <th>$f(x)$</th>
-                <th>Derecha ($x > ${a}$)</th>
-                <th>$f(x)$</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${filasHTML}
-            </tbody>
-          </table>
+        <!-- Teclado de Símbolos Matemáticos Global -->
+        <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-xl space-y-2">
+            <div class="flex items-center justify-between text-xs font-semibold text-slate-300">
+                <span class="flex items-center gap-2 text-indigo-300">
+                    <i class="fa-solid fa-keyboard text-indigo-400"></i> Barra de Símbolos Matemáticos Rápidos
+                </span>
+                <span class="text-slate-400 text-[11px]">Haz clic en cualquier símbolo para insertarlo en el campo activo</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+                <button onclick="insertSymbol('x')" class="math-btn bg-slate-900 hover:bg-slate-700 text-blue-300 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">x</button>
+                <button onclick="insertSymbol('^2')" class="math-btn bg-slate-900 hover:bg-slate-700 text-blue-300 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">x²</button>
+                <button onclick="insertSymbol('^')" class="math-btn bg-slate-900 hover:bg-slate-700 text-blue-300 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">xⁿ</button>
+                <button onclick="insertSymbol('sqrt(')" class="math-btn bg-slate-900 hover:bg-slate-700 text-emerald-300 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">√x</button>
+                <button onclick="insertSymbol('e^(')" class="math-btn bg-slate-900 hover:bg-slate-700 text-emerald-300 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">eⁿ</button>
+                <button onclick="insertSymbol('pi')" class="math-btn bg-slate-900 hover:bg-slate-700 text-emerald-300 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">π</button>
+                <button onclick="insertSymbol('sin(')" class="math-btn bg-slate-900 hover:bg-slate-700 text-purple-300 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">sin(x)</button>
+                <button onclick="insertSymbol('cos(')" class="math-btn bg-slate-900 hover:bg-slate-700 text-purple-300 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">cos(x)</button>
+                <button onclick="insertSymbol('tan(')" class="math-btn bg-slate-900 hover:bg-slate-700 text-purple-300 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">tan(x)</button>
+                <button onclick="insertSymbol('log(')" class="math-btn bg-slate-900 hover:bg-slate-700 text-amber-300 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">ln/log</button>
+                <button onclick="insertSymbol(' / ')" class="math-btn bg-slate-900 hover:bg-slate-700 text-amber-300 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">a/b</button>
+                <button onclick="insertSymbol('(')" class="math-btn bg-slate-900 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">(</button>
+                <button onclick="insertSymbol(')')" class="math-btn bg-slate-900 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">)</button>
+                <button onclick="insertSymbol('+')" class="math-btn bg-slate-900 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">+</button>
+                <button onclick="insertSymbol('-')" class="math-btn bg-slate-900 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">-</button>
+                <button onclick="insertSymbol('*')" class="math-btn bg-slate-900 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold font-mono">×</button>
+            </div>
         </div>
 
-        <div class="paso-bloque">
-          <div class="paso-titulo">4. Análisis Tendencial y Comprobación Lateral</div>
-          <p>• Tendencia por la izquierda: $$\\lim_{x \\to ${a}^-} f(x) \\approx ${ultIzquierda.toFixed(4)}$$</p>
-          <p>• Tendencia por la derecha: $$\\lim_{x \\to ${a}^+} f(x) \\approx ${ultDerecha.toFixed(4)}$$</p>
-          <div class="nota-lateral">
-            Dado que los límites laterales convergen al mismo valor, se verifica la existencia del límite bilateral.
-          </div>
+        <!-- Navigation Tabs per Student / Method -->
+        <div class="bg-slate-800 p-2 rounded-2xl border border-slate-700 shadow-xl overflow-x-auto">
+            <nav class="flex space-x-2 min-w-max" id="method-tabs">
+                <button onclick="switchTab('promedio')" id="tab-promedio" class="tab-btn active px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-2.5 transition-all bg-blue-600 text-white shadow-md shadow-blue-600/30">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>1. Valor Promedio</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-blue-700 text-blue-100 border border-blue-400/30">Willian Valencia</span>
+                </button>
+
+                <button onclick="switchTab('definida')" id="tab-definida" class="tab-btn px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-2.5 transition-all text-slate-400 hover:text-white hover:bg-slate-700/50">
+                    <i class="fa-solid fa-chart-area"></i>
+                    <span>2. Integral Definida</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Diego Mejía</span>
+                </button>
+
+                <button onclick="switchTab('sustitucion')" id="tab-sustitucion" class="tab-btn px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-2.5 transition-all text-slate-400 hover:text-white hover:bg-slate-700/50">
+                    <i class="fa-solid fa-right-left"></i>
+                    <span>3. Sustitución</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Guillermo Vicente</span>
+                </button>
+
+                <button onclick="switchTab('partes')" id="tab-partes" class="tab-btn px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-2.5 transition-all text-slate-400 hover:text-white hover:bg-slate-700/50">
+                    <i class="fa-solid fa-scissors"></i>
+                    <span>4. Por Partes (LIATE)</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Sharon Alvarado</span>
+                </button>
+
+                <button onclick="switchTab('trig')" id="tab-trig" class="tab-btn px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-2.5 transition-all text-slate-400 hover:text-white hover:bg-slate-700/50">
+                    <i class="fa-solid fa-shapes"></i>
+                    <span>5. Sust. Trigonométrica</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">Juan De León</span>
+                </button>
+
+                <button onclick="switchTab('custom')" id="tab-custom" class="tab-btn px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-2.5 transition-all text-slate-400 hover:text-white hover:bg-slate-700/50">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>6. Personalizado</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-700 text-indigo-100 border border-indigo-500/30">Libre</span>
+                </button>
+            </nav>
         </div>
 
-        <div class="caja-resultado-final">
-          R // $$\\lim_{x \\to ${a}} \\left( ${funcionTex} \\right) = ${limiteEstimado}$$
+        <!-- Dynamic Content Sections -->
+        
+        <!-- SECTION 1: VALOR PROMEDIO (Willian Valencia) -->
+        <section id="sec-promedio" class="tab-content block space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Panel de Entrada -->
+                <div class="lg:col-span-5 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-5">
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-calculator text-blue-400"></i> Entrada de Función
+                        </h2>
+                        <span class="text-xs text-blue-400 font-semibold bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-500/20">Willian Valencia</span>
+                    </div>
+
+                    <!-- Pestañas de Modo para Valor Promedio -->
+                    <div class="flex bg-slate-900 p-1 rounded-xl text-xs font-semibold border border-slate-700">
+                        <button onclick="togglePromMode('plantillas')" id="btn-prom-plantillas" class="flex-1 py-2 rounded-lg bg-blue-600 text-white">Plantillas de Ejemplo</button>
+                        <button onclick="togglePromMode('custom')" id="btn-prom-custom" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-white">Ingresar Mi Función</button>
+                    </div>
+
+                    <!-- Modo Plantillas Promedio -->
+                    <div id="prom-mode-plantillas" class="space-y-2">
+                        <button onclick="cargarEjemploProm(0)" class="w-full text-left bg-slate-900/80 hover:bg-slate-700/80 p-2.5 rounded-xl border border-slate-700 transition-all flex justify-between items-center">
+                            <span class="text-xs text-blue-300 font-serif">1. $f(x) = x^2$ en $[0, 3]$</span>
+                            <span class="text-[10px] text-slate-400">Parábola</span>
+                        </button>
+                        <button onclick="cargarEjemploProm(1)" class="w-full text-left bg-slate-900/80 hover:bg-slate-700/80 p-2.5 rounded-xl border border-slate-700 transition-all flex justify-between items-center">
+                            <span class="text-xs text-blue-300 font-serif">2. $f(x) = \sin(x)$ en $[0, \pi]$</span>
+                            <span class="text-[10px] text-slate-400">Trigonométrica</span>
+                        </button>
+                        <button onclick="cargarEjemploProm(2)" class="w-full text-left bg-slate-900/80 hover:bg-slate-700/80 p-2.5 rounded-xl border border-slate-700 transition-all flex justify-between items-center">
+                            <span class="text-xs text-blue-300 font-serif">3. $f(x) = e^x$ en $[0, 2]$</span>
+                            <span class="text-[10px] text-slate-400">Exponencial</span>
+                        </button>
+                    </div>
+
+                    <!-- Modo Custom Promedio -->
+                    <div id="prom-mode-custom" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Función $f(x)$ personalizable</label>
+                            <input type="text" id="prom-fx" value="x^2" onfocus="activeInputId = 'prom-fx'" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 math-code text-sm" placeholder="Ej: x^2, sin(x), 3*x + 1">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Límite $a$</label>
+                                <input type="number" id="prom-a" value="0" step="any" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Límite $b$</label>
+                                <input type="number" id="prom-b" value="3" step="any" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 text-sm">
+                            </div>
+                        </div>
+
+                        <button onclick="calcularValorPromedio()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-blue-600/30 transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-gears"></i> Calcular Valor Promedio Paso a Paso
+                        </button>
+                    </div>
+
+                    <!-- Fórmula General -->
+                    <div class="p-4 bg-slate-900/60 rounded-xl border border-slate-700/80 space-y-2">
+                        <span class="text-xs font-bold text-blue-400 uppercase tracking-wide">Fórmula Fundamental</span>
+                        <div class="text-center py-2 text-lg text-white font-serif">
+                            $$f_{prom} = \frac{1}{b - a} \int_{a}^{b} f(x) \, dx$$
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visualización Gráfica -->
+                <div class="lg:col-span-7 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl flex flex-col justify-between">
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-3 mb-4">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-chart-area text-indigo-400"></i> Gráfica del Valor Promedio
+                        </h2>
+                        <span class="text-xs text-slate-400">Rectángulo equivalente a la curva</span>
+                    </div>
+                    <div class="relative w-full h-[320px] bg-slate-900/80 rounded-xl p-2 border border-slate-700">
+                        <canvas id="promedioChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Procedimiento -->
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                    <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check"></i> PROCEDIMIENTO EXTENSO Y DETALLADO PASO A PASO
+                    </h3>
+                    <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold rounded-full">Tema: Valor Promedio</span>
+                </div>
+                <div id="prom-steps-container" class="space-y-4"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: INTEGRAL DEFINIDA (Diego Mejía) -->
+        <section id="sec-definida" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Inputs -->
+                <div class="lg:col-span-5 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-5">
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-square-root-variable text-emerald-400"></i> Configuración de Integración
+                        </h2>
+                        <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">Diego Mejía</span>
+                    </div>
+
+                    <!-- Pestañas de Modo para Integral Definida -->
+                    <div class="flex bg-slate-900 p-1 rounded-xl text-xs font-semibold border border-slate-700">
+                        <button onclick="toggleDefMode('plantillas')" id="btn-def-plantillas" class="flex-1 py-2 rounded-lg bg-emerald-600 text-white">Plantillas de Ejemplo</button>
+                        <button onclick="toggleDefMode('custom')" id="btn-def-custom" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-white">Ingresar Mi Función</button>
+                    </div>
+
+                    <!-- Modo Plantillas Definida -->
+                    <div id="def-mode-plantillas" class="space-y-2">
+                        <button onclick="cargarEjemploDef(0)" class="w-full text-left bg-slate-900/80 hover:bg-slate-700/80 p-2.5 rounded-xl border border-slate-700 transition-all flex justify-between items-center">
+                            <span class="text-xs text-emerald-300 font-serif">1. $\int_{0}^{1} \frac{1}{1+x^2} dx$</span>
+                            <span class="text-[10px] text-slate-400">Arcotangente</span>
+                        </button>
+                        <button onclick="cargarEjemploDef(1)" class="w-full text-left bg-slate-900/80 hover:bg-slate-700/80 p-2.5 rounded-xl border border-slate-700 transition-all flex justify-between items-center">
+                            <span class="text-xs text-emerald-300 font-serif">2. $\int_{1}^{3} x^3 dx$</span>
+                            <span class="text-[10px] text-slate-400">Polinómica</span>
+                        </button>
+                        <button onclick="cargarEjemploDef(2)" class="w-full text-left bg-slate-900/80 hover:bg-slate-700/80 p-2.5 rounded-xl border border-slate-700 transition-all flex justify-between items-center">
+                            <span class="text-xs text-emerald-300 font-serif">3. $\int_{0}^{\pi} \sin(x) dx$</span>
+                            <span class="text-[10px] text-slate-400">Seno</span>
+                        </button>
+                    </div>
+
+                    <!-- Modo Custom Definida -->
+                    <div id="def-mode-custom" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Función $f(x)$</label>
+                            <input type="text" id="def-fx" value="1 / (1 + x^2)" onfocus="activeInputId = 'def-fx'" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 math-code text-sm">
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Límite $a$</label>
+                                <input type="number" id="def-a" value="0" step="any" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Límite $b$</label>
+                                <input type="number" id="def-b" value="1" step="any" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Subint. ($n$)</label>
+                                <input type="number" id="def-n" value="4" min="2" step="2" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500 text-sm">
+                            </div>
+                        </div>
+
+                        <button onclick="calcularIntegralDefinida()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-calculator"></i> Resolver por Trapecio y Simpson
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabla Comparativa -->
+                <div class="lg:col-span-7 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-5 flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-white border-b border-slate-700 pb-3 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-table-cells text-emerald-400"></i> Métodos Numéricos & Comparativa
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 text-center">
+                                <span class="text-xs text-slate-400 font-medium">Valor Analítico Exacto</span>
+                                <div id="def-res-exacto" class="text-lg font-bold text-blue-400 my-1">--</div>
+                                <span class="text-[10px] text-slate-500">$F(b)-F(a)$</span>
+                            </div>
+                            <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 text-center">
+                                <span class="text-xs text-slate-400 font-medium">Regla Trapecio</span>
+                                <div id="def-res-trapecio" class="text-lg font-bold text-emerald-400 my-1">--</div>
+                                <span id="def-err-trapecio" class="text-[10px] text-amber-400">Error: --</span>
+                            </div>
+                            <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 text-center">
+                                <span class="text-xs text-slate-400 font-medium">Regla Simpson 1/3</span>
+                                <div id="def-res-simpson" class="text-lg font-bold text-teal-400 my-1">--</div>
+                                <span id="def-err-simpson" class="text-[10px] text-amber-400">Error: --</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700">
+                        <h4 class="text-xs font-bold text-slate-300 mb-2 uppercase tracking-wide">Puntos Muestra Evaluados</h4>
+                        <div class="overflow-x-auto max-h-40">
+                            <table class="w-full text-xs text-left text-slate-300">
+                                <thead class="text-[11px] uppercase bg-slate-800 text-slate-400 sticky top-0">
+                                    <tr>
+                                        <th class="px-3 py-2">i</th>
+                                        <th class="px-3 py-2">$x_i$</th>
+                                        <th class="px-3 py-2">$f(x_i)$</th>
+                                        <th class="px-3 py-2">Coef. Trapecio</th>
+                                        <th class="px-3 py-2">Coef. Simpson</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="def-table-body" class="divide-y divide-slate-800">
+                                    <tr><td colspan="5" class="px-3 py-4 text-center text-slate-500">Haz clic en Resolver para calcular.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Procedimiento -->
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                    <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check"></i> PROCEDIMIENTO EXTENSO Y DETALLADO PASO A PASO
+                    </h3>
+                    <span class="px-3 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold rounded-full">Tema: Integral Definida</span>
+                </div>
+                <div id="def-steps-container" class="space-y-4"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: CAMBIO DE VARIABLE (Guillermo Vicente) -->
+        <section id="sec-sustitucion" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Selector e Ingreso Personal -->
+                <div class="lg:col-span-5 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-5">
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-right-left text-purple-400"></i> Método de Sustitución
+                        </h2>
+                        <span class="text-xs text-purple-400 font-semibold bg-purple-500/10 px-2.5 py-1 rounded-lg border border-purple-500/20">Guillermo Vicente</span>
+                    </div>
+
+                    <!-- Pestañas de Modo -->
+                    <div class="flex bg-slate-900 p-1 rounded-xl text-xs font-semibold border border-slate-700">
+                        <button onclick="toggleSubMode('plantillas')" id="btn-sub-plantillas" class="flex-1 py-2 rounded-lg bg-purple-600 text-white">Plantillas de Ejemplo</button>
+                        <button onclick="toggleSubMode('custom')" id="btn-sub-custom" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-white">Ingresar Mi Función</button>
+                    </div>
+
+                    <!-- Modo Plantillas -->
+                    <div id="sub-mode-plantillas" class="space-y-2">
+                        <button onclick="cargarEjemploSub(0)" class="w-full text-left bg-slate-900/80 hover:bg-slate-700/80 p-3 rounded-xl border border-slate-700 transition-all">
+                            <div class="text-xs font-semibold text-purple-300">Ejemplo 1: Exponencial</div>
+                            <div class="text-xs text-slate-400 font-serif">$\int 2x e^{x^2} \, dx$</div>
+                        </button>
+                        <button onclick="cargarEjemploSub(1)" class="w-full text-left bg-slate-900/80 hover:bg-slate-700/80 p-3 rounded-xl border border-slate-700 transition-all">
+                            <div class="text-xs font-semibold text-purple-300">Ejemplo 2: Logarítmica</div>
+                            <div class="text-xs text-slate-400 font-serif">$\int \frac{2x}{x^2 + 1} \, dx$</div>
+                        </button>
+                        <button onclick="cargarEjemploSub(2)" class="w-full text-left bg-slate-900/80 hover:bg-slate-700/80 p-3 rounded-xl border border-slate-700 transition-all">
+                            <div class="text-xs font-semibold text-purple-300">Ejemplo 3: Radical</div>
+                            <div class="text-xs text-slate-400 font-serif">$\int x \sqrt{x^2 + 4} \, dx$</div>
+                        </button>
+                    </div>
+
+                    <!-- Modo Custom -->
+                    <div id="sub-mode-custom" class="hidden space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Integral $\int f(x) dx$</label>
+                            <input type="text" id="sub-custom-fx" value="3*x^2 * (x^3 + 1)^4" onfocus="activeInputId = 'sub-custom-fx'" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs math-code">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Elegir Sustitución $u = g(x)$</label>
+                            <input type="text" id="sub-custom-u" value="x^3 + 1" onfocus="activeInputId = 'sub-custom-u'" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs math-code">
+                        </div>
+                        <button onclick="resolverSubCustom()" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2.5 rounded-xl text-xs shadow-md">
+                            Generar Desglose de Sustitución
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Panel Explicativo -->
+                <div class="lg:col-span-7 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl flex flex-col justify-between">
+                    <div class="border-b border-slate-700 pb-3 mb-4 flex items-center justify-between">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-diagram-project text-purple-400"></i> Esquema de Sustitución
+                        </h2>
+                        <span class="text-xs text-slate-400">Cambio de Variable</span>
+                    </div>
+
+                    <div class="bg-slate-900/90 p-5 rounded-xl border border-slate-700 space-y-4 text-center">
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="p-2.5 bg-slate-800 rounded-lg border border-purple-500/30">
+                                <span class="text-[10px] text-purple-400 uppercase font-bold">1. Definir $u$</span>
+                                <div class="text-xs font-serif mt-1">$u = g(x)$</div>
+                            </div>
+                            <div class="p-2.5 bg-slate-800 rounded-lg border border-purple-500/30">
+                                <span class="text-[10px] text-purple-400 uppercase font-bold">2. Diferencial</span>
+                                <div class="text-xs font-serif mt-1">$du = g'(x)dx$</div>
+                            </div>
+                            <div class="p-2.5 bg-slate-800 rounded-lg border border-purple-500/30">
+                                <span class="text-[10px] text-purple-400 uppercase font-bold">3. Reemplazar</span>
+                                <div class="text-xs font-serif mt-1">$\int f(u) du$</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="sub-resumen-box" class="mt-4 p-4 bg-purple-950/30 border border-purple-500/30 rounded-xl text-center">
+                        <span class="text-xs text-purple-300 font-semibold">Selecciona un ejemplo o ingresa tu función personalizada.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Procedimiento -->
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                    <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check"></i> PROCEDIMIENTO EXTENSO Y DETALLADO PASO A PASO
+                    </h3>
+                    <span class="px-3 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold rounded-full">Tema: Sustitución</span>
+                </div>
+                <div id="sub-steps-container" class="space-y-4"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: INTEGRACIÓN POR PARTES (Sharon Alvarado) -->
+        <section id="sec-partes" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-5 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-5">
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group text-amber-400"></i> Integración por Partes (LIATE)
+                        </h2>
+                        <span class="text-xs text-amber-400 font-semibold bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">Sharon Alvarado</span>
+                    </div>
+
+                    <!-- Pestañas de Modo -->
+                    <div class="flex bg-slate-900 p-1 rounded-xl text-xs font-semibold border border-slate-700">
+                        <button onclick="togglePartesMode('plantillas')" id="btn-partes-plantillas" class="flex-1 py-2 rounded-lg bg-amber-600 text-white">Ejemplos Guía</button>
+                        <button onclick="togglePartesMode('custom')" id="btn-partes-custom" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-white">Ejercicio Propio</button>
+                    </div>
+
+                    <!-- Ejemplos -->
+                    <div id="partes-mode-plantillas" class="space-y-2">
+                        <button onclick="cargarEjemploPartes(0)" class="w-full text-left bg-slate-900/80 hover:bg-slate-700/80 p-2.5 rounded-xl border border-slate-700 transition-all flex justify-between items-center">
+                            <span class="text-xs text-amber-300 font-serif">$\int x e^x \, dx$</span>
+                            <span class="text-[10px] text-slate-400">Algebraica × Exponencial</span>
+                        </button>
+                        <button onclick="cargarEjemploPartes(1)" class="w-full text-left bg-slate-900/80 hover:bg-slate-700/80 p-2.5 rounded-xl border border-slate-700 transition-all flex justify-between items-center">
+                            <span class="text-xs text-amber-300 font-serif">$\int x \ln(x) \, dx$</span>
+                            <span class="text-[10px] text-slate-400">Logarítmica × Algebraica</span>
+                        </button>
+                        <button onclick="cargarEjemploPartes(2)" class="w-full text-left bg-slate-900/80 hover:bg-slate-700/80 p-2.5 rounded-xl border border-slate-700 transition-all flex justify-between items-center">
+                            <span class="text-xs text-amber-300 font-serif">$\int x \cos(x) \, dx$</span>
+                            <span class="text-[10px] text-slate-400">Algebraica × Trigonométrica</span>
+                        </button>
+                    </div>
+
+                    <!-- Custom -->
+                    <div id="partes-mode-custom" class="hidden space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Término $u$</label>
+                            <input type="text" id="partes-custom-u" value="x" onfocus="activeInputId = 'partes-custom-u'" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs math-code" placeholder="Ej: x, ln(x)">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Término $dv$</label>
+                            <input type="text" id="partes-custom-dv" value="sin(x) dx" onfocus="activeInputId = 'partes-custom-dv'" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs math-code" placeholder="Ej: e^x dx, cos(x) dx">
+                        </div>
+                        <button onclick="resolverPartesCustom()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-semibold py-2.5 rounded-xl text-xs shadow-md">
+                            Desglosar $\int u dv = uv - \int v du$
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl flex flex-col justify-between">
+                    <div class="border-b border-slate-700 pb-3 mb-4 flex items-center justify-between">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-quote-left text-amber-400"></i> Regla LIATE & Mnemotecnia
+                        </h2>
+                        <span class="text-xs text-slate-400 font-serif">"Un Día Vi Una Vaca Vestida De Uniforme"</span>
+                    </div>
+
+                    <div class="bg-slate-900/90 p-5 rounded-xl border border-slate-700 text-center space-y-3">
+                        <div class="text-xl font-bold text-amber-400 font-serif">
+                            $$\int u \, dv = u \cdot v - \int v \, du$$
+                        </div>
+                        <p class="text-xs text-slate-400">Prioridad LIATE: Logarítmicas, Inversas, Algebraicas, Trigonométricas, Exponenciales.</p>
+                    </div>
+
+                    <div id="partes-resumen-box" class="mt-4 p-4 bg-amber-950/30 border border-amber-500/30 rounded-xl text-center">
+                        <span class="text-xs text-amber-300 font-semibold">Selecciona un ejercicio o ingresa $u$ y $dv$.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Procedimiento -->
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                    <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check"></i> PROCEDIMIENTO EXTENSO Y DETALLADO PASO A PASO
+                    </h3>
+                    <span class="px-3 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold rounded-full">Tema: Por Partes</span>
+                </div>
+                <div id="partes-steps-container" class="space-y-4"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: SUSTITUCIÓN TRIGONOMÉTRICA (Juan De León) -->
+        <section id="sec-trig" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-5 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-5">
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation text-rose-400"></i> Selección de Caso Radical
+                        </h2>
+                        <span class="text-xs text-rose-400 font-semibold bg-rose-500/10 px-2.5 py-1 rounded-lg border border-rose-500/20">Juan De León</span>
+                    </div>
+
+                    <!-- Pestañas de Modo para Sust. Trigonométrica -->
+                    <div class="flex bg-slate-900 p-1 rounded-xl text-xs font-semibold border border-slate-700">
+                        <button onclick="toggleTrigMode('plantillas')" id="btn-trig-plantillas" class="flex-1 py-2 rounded-lg bg-rose-600 text-white">Plantillas de Ejemplo</button>
+                        <button onclick="toggleTrigMode('custom')" id="btn-trig-custom" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-white">Ingresar Mi Configuración</button>
+                    </div>
+
+                    <!-- Modo Plantillas Trig -->
+                    <div id="trig-mode-plantillas" class="space-y-2">
+                        <button onclick="cargarEjemploTrig(1, 3)" class="w-full text-left bg-slate-900/80 hover:bg-slate-700/80 p-2.5 rounded-xl border border-slate-700 transition-all flex justify-between items-center">
+                            <span class="text-xs text-rose-300 font-serif">Caso 1 (Ejemplo Foto): $\int \frac{x^2}{\sqrt{9 - x^2}} dx$</span>
+                            <span class="text-[10px] text-slate-400">$a=3$</span>
+                        </button>
+                        <button onclick="cargarEjemploTrig(2, 4)" class="w-full text-left bg-slate-900/80 hover:bg-slate-700/80 p-2.5 rounded-xl border border-slate-700 transition-all flex justify-between items-center">
+                            <span class="text-xs text-rose-300 font-serif">Caso 2: $\sqrt{16 + x^2}$</span>
+                            <span class="text-[10px] text-slate-400">$a=4$</span>
+                        </button>
+                        <button onclick="cargarEjemploTrig(3, 5)" class="w-full text-left bg-slate-900/80 hover:bg-slate-700/80 p-2.5 rounded-xl border border-slate-700 transition-all flex justify-between items-center">
+                            <span class="text-xs text-rose-300 font-serif">Caso 3: $\sqrt{x^2 - 25}$</span>
+                            <span class="text-[10px] text-slate-400">$a=5$</span>
+                        </button>
+                    </div>
+
+                    <!-- Modo Custom Trig -->
+                    <div id="trig-mode-custom" class="space-y-4">
+                        <div class="space-y-3">
+                            <button onclick="seleccionarCasoTrig(1)" id="btn-caso-1" class="w-full text-left bg-slate-900 border border-rose-500/50 p-3 rounded-xl transition-all hover:bg-slate-700/50">
+                                <div class="text-xs font-bold text-rose-400 uppercase">Caso 1: Forma $\sqrt{a^2 - x^2}$</div>
+                                <div class="text-xs text-slate-300">Sustitución: $x = a \operatorname{sen}(\theta)$</div>
+                            </button>
+
+                            <button onclick="seleccionarCasoTrig(2)" id="btn-caso-2" class="w-full text-left bg-slate-900 border border-slate-700 p-3 rounded-xl transition-all hover:bg-slate-700/50">
+                                <div class="text-xs font-bold text-rose-400 uppercase">Caso 2: Forma $\sqrt{a^2 + x^2}$</div>
+                                <div class="text-xs text-slate-300">Sustitución: $x = a \tan(\theta)$</div>
+                            </button>
+
+                            <button onclick="seleccionarCasoTrig(3)" id="btn-caso-3" class="w-full text-left bg-slate-900 border border-slate-700 p-3 rounded-xl transition-all hover:bg-slate-700/50">
+                                <div class="text-xs font-bold text-rose-400 uppercase">Caso 3: Forma $\sqrt{x^2 - a^2}$</div>
+                                <div class="text-xs text-slate-300">Sustitución: $x = a \sec(\theta)$</div>
+                            </button>
+                        </div>
+
+                        <div class="space-y-3 pt-2">
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Valor de la Constante $a$</label>
+                            <input type="number" id="trig-a" value="3" min="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-rose-500 text-sm">
+                            <button onclick="generarSustitucionTrig()" class="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-semibold py-3 px-4 rounded-xl shadow-lg shadow-rose-600/30 transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-play"></i> Actualizar Triángulo y Solución
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Triángulo Rectángulo SVG -->
+                <div class="lg:col-span-7 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl flex flex-col justify-between">
+                    <div class="border-b border-slate-700 pb-3 mb-2 flex items-center justify-between">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-draw-polygon text-rose-400"></i> Triángulo de Referencia Geométrico
+                        </h2>
+                        <span class="text-xs text-slate-400">Paso 1: Construcción Geométrica</span>
+                    </div>
+
+                    <div class="flex items-center justify-center bg-slate-900/90 rounded-xl p-4 border border-slate-700 min-h-[250px]">
+                        <svg id="trig-triangle-svg" width="300" height="190" viewBox="0 0 300 190" class="overflow-visible"></svg>
+                    </div>
+
+                    <div id="trig-resumen-box" class="mt-4 p-3 bg-rose-950/30 border border-rose-500/30 rounded-xl text-center text-xs text-rose-300">
+                        Configura el valor de $a$ y el caso.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Procedimiento -->
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                    <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-pink-300 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check"></i> PROCEDIMIENTO DESGLOSADO ESTILO LIBRETA (PASO A PASO)
+                    </h3>
+                    <span class="px-3 py-1 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold rounded-full">Tema: Sust. Trigonométrica</span>
+                </div>
+                <div id="trig-steps-container" class="space-y-4"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: INGRESO PERSONALIZADO (Calculadora Libre) -->
+        <section id="sec-custom" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Inputs de usuario -->
+                <div class="lg:col-span-5 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-5">
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-pen-to-square text-indigo-400"></i> Integración Personalizada
+                        </h2>
+                        <span class="text-xs text-indigo-400 font-semibold bg-indigo-500/10 px-2.5 py-1 rounded-lg border border-indigo-500/20">Modo Libre</span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Función $f(x)$</label>
+                            <input type="text" id="custom-fx" value="x^3 + 2*x" onfocus="activeInputId = 'custom-fx'" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 math-code text-sm" placeholder="Ej: x^2, sin(x), e^x">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Límite $a$ (Opcional)</label>
+                                <input type="number" id="custom-a" value="0" step="any" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Límite $b$ (Opcional)</label>
+                                <input type="number" id="custom-b" value="2" step="any" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 text-sm">
+                            </div>
+                        </div>
+
+                        <button onclick="procesarCustomFunction()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-bolt"></i> Analizar e Integrar Función
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Panel de Evaluación Dinámica -->
+                <div class="lg:col-span-7 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-4">
+                    <div class="border-b border-slate-700 pb-3 flex items-center justify-between">
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-square-poll-vertical text-indigo-400"></i> Resultado de Análisis
+                        </h2>
+                        <span class="text-xs text-slate-400 font-mono">MathJS + Numeric Integration</span>
+                    </div>
+
+                    <div id="custom-res-card" class="bg-slate-900 p-5 rounded-xl border border-slate-700 text-center space-y-3">
+                        <div class="text-xs text-indigo-300 font-semibold uppercase">Integral de la Función Ingresada</div>
+                        <div id="custom-formula-display" class="text-xl font-serif text-white">$$\int (x^3 + 2x) \, dx$$</div>
+                    </div>
+
+                    <div id="custom-eval-box" class="bg-slate-900/80 p-4 rounded-xl border border-slate-700 space-y-2">
+                        <span class="text-xs font-bold text-slate-300 uppercase">Evaluaciones de Puntos Clave</span>
+                        <div class="grid grid-cols-3 gap-2 text-center text-xs text-slate-300 pt-2" id="custom-points-grid">
+                            <div class="bg-slate-800 p-2 rounded">$f(a)$: --</div>
+                            <div class="bg-slate-800 p-2 rounded">$f((a+b)/2)$: --</div>
+                            <div class="bg-slate-800 p-2 rounded">$f(b)$: --</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Procedimiento -->
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                    <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check"></i> PROCEDIMIENTO EXTENSO Y DESGLOSE COMPLETO
+                    </h3>
+                    <span class="px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold rounded-full">Calculadora Libre</span>
+                </div>
+                <div id="custom-steps-container" class="space-y-4"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 py-6 text-center text-xs text-slate-500 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p>Calculadora de Integrales y Métodos Académicos - Proyecto de Cálculo II</p>
+            <p class="text-slate-400">Integrantes: Willian Valencia | Diego Mejía | Guillermo Vicente | Sharon Alvarado | Juan De León</p>
         </div>
-      `;
+    </footer>
 
-      divProc.innerHTML = htmlProcedimiento;
-      divProc.style.display = 'block';
+    <!-- LOGIC JS APP -->
+    <script>
+        let meChart = null;
+        let selectedTrigCase = 1;
+        let activeInputId = 'prom-fx';
 
-      // Renderizar notaciones matemáticas con MathJax
-      if (window.MathJax) {
-        MathJax.typesetPromise([divProc]);
-      }
-    }
-  </script>
-</body>
-</html>
+        // Inserción de símbolos en input activo
+        function insertSymbol(symbol) {
+            const input = document.getElementById(activeInputId);
+            if (!input) return;
+            const start = input.selectionStart || input.value.length;
+            const end = input.selectionEnd || input.value.length;
+            const text = input.value;
+            input.value = text.substring(0, start) + symbol + text.substring(end);
+            input.focus();
+            input.setSelectionRange(start + symbol.length, start + symbol.length);
+        }
+
+        // Control de Pestañas
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'shadow-md');
+                btn.classList.add('text-slate-400');
+            });
+
+            document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-md');
+            activeBtn.classList.remove('text-slate-400');
+
+            if (tabId === 'promedio') activeInputId = 'prom-fx';
+            else if (tabId === 'definida') activeInputId = 'def-fx';
+            else if (tabId === 'sustitucion') activeInputId = 'sub-custom-fx';
+            else if (tabId === 'partes') activeInputId = 'partes-custom-u';
+            else if (tabId === 'custom') activeInputId = 'custom-fx';
+
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        // --- CONTROL DE MODOS PLANTILLAS / CUSTOM PARA CADA SECCIÓN ---
+
+        // Valor Promedio Modos
+        function togglePromMode(mode) {
+            if (mode === 'plantillas') {
+                document.getElementById('prom-mode-plantillas').classList.remove('hidden');
+                document.getElementById('prom-mode-custom').classList.add('hidden');
+                document.getElementById('btn-prom-plantillas').className = "flex-1 py-2 rounded-lg bg-blue-600 text-white";
+                document.getElementById('btn-prom-custom').className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white";
+            } else {
+                document.getElementById('prom-mode-plantillas').classList.add('hidden');
+                document.getElementById('prom-mode-custom').classList.remove('hidden');
+                document.getElementById('btn-prom-plantillas').className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white";
+                document.getElementById('btn-prom-custom').className = "flex-1 py-2 rounded-lg bg-blue-600 text-white";
+                activeInputId = 'prom-fx';
+            }
+        }
+
+        const ejemplosProm = [
+            { fx: "x^2", a: 0, b: 3 },
+            { fx: "sin(x)", a: 0, b: Math.PI.toFixed(2) },
+            { fx: "e^x", a: 0, b: 2 }
+        ];
+
+        function cargarEjemploProm(idx) {
+            const ej = ejemplosProm[idx];
+            document.getElementById('prom-fx').value = ej.fx;
+            document.getElementById('prom-a').value = ej.a;
+            document.getElementById('prom-b').value = ej.b;
+            calcularValorPromedio();
+        }
+
+        // Integral Definida Modos
+        function toggleDefMode(mode) {
+            if (mode === 'plantillas') {
+                document.getElementById('def-mode-plantillas').classList.remove('hidden');
+                document.getElementById('def-mode-custom').classList.add('hidden');
+                document.getElementById('btn-def-plantillas').className = "flex-1 py-2 rounded-lg bg-emerald-600 text-white";
+                document.getElementById('btn-def-custom').className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white";
+            } else {
+                document.getElementById('def-mode-plantillas').classList.add('hidden');
+                document.getElementById('def-mode-custom').classList.remove('hidden');
+                document.getElementById('btn-def-plantillas').className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white";
+                document.getElementById('btn-def-custom').className = "flex-1 py-2 rounded-lg bg-emerald-600 text-white";
+                activeInputId = 'def-fx';
+            }
+        }
+
+        const ejemplosDef = [
+            { fx: "1 / (1 + x^2)", a: 0, b: 1, n: 4 },
+            { fx: "x^3", a: 1, b: 3, n: 4 },
+            { fx: "sin(x)", a: 0, b: Math.PI.toFixed(2), n: 6 }
+        ];
+
+        function cargarEjemploDef(idx) {
+            const ej = ejemplosDef[idx];
+            document.getElementById('def-fx').value = ej.fx;
+            document.getElementById('def-a').value = ej.a;
+            document.getElementById('def-b').value = ej.b;
+            document.getElementById('def-n').value = ej.n;
+            calcularIntegralDefinida();
+        }
+
+        // Sustitución Trigonométrica Modos
+        function toggleTrigMode(mode) {
+            if (mode === 'plantillas') {
+                document.getElementById('trig-mode-plantillas').classList.remove('hidden');
+                document.getElementById('trig-mode-custom').classList.add('hidden');
+                document.getElementById('btn-trig-plantillas').className = "flex-1 py-2 rounded-lg bg-rose-600 text-white";
+                document.getElementById('btn-trig-custom').className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white";
+            } else {
+                document.getElementById('trig-mode-plantillas').classList.add('hidden');
+                document.getElementById('trig-mode-custom').classList.remove('hidden');
+                document.getElementById('btn-trig-plantillas').className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white";
+                document.getElementById('btn-trig-custom').className = "flex-1 py-2 rounded-lg bg-rose-600 text-white";
+            }
+        }
+
+        function cargarEjemploTrig(caso, valA) {
+            document.getElementById('trig-a').value = valA;
+            seleccionarCasoTrig(caso);
+        }
+
+        // 1. VALOR PROMEDIO (Willian Valencia)
+        function calcularValorPromedio() {
+            const exprStr = document.getElementById('prom-fx').value;
+            const a = parseFloat(document.getElementById('prom-a').value);
+            const b = parseFloat(document.getElementById('prom-b').value);
+
+            if (isNaN(a) || isNaN(b) || a >= b) {
+                alert("Introduce límites válidos donde a < b.");
+                return;
+            }
+
+            try {
+                const expr = math.compile(exprStr);
+                const steps = 1000;
+                const h = (b - a) / steps;
+                let sum = expr.evaluate({x: a}) + expr.evaluate({x: b});
+                
+                for (let i = 1; i < steps; i++) {
+                    const x = a + i * h;
+                    sum += (i % 2 === 0 ? 2 : 4) * expr.evaluate({x: x});
+                }
+                const integralVal = (h / 3) * sum;
+                const longitud = b - a;
+                const factor = 1 / longitud;
+                const fProm = integralVal * factor;
+
+                const container = document.getElementById('prom-steps-container');
+                container.innerHTML = `
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-blue-500">
+                        <div class="flex items-center gap-2 text-sm font-bold text-blue-400">
+                            <span class="w-7 h-7 rounded-full bg-blue-500/20 flex items-center justify-center text-xs">1</span>
+                            Fundamento Teórico y Asignación de Responsable
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>Estudiante asignado:</strong> Willian Valencia.<br>
+                            El valor promedio de una función continua $f(x)$ sobre un intervalo cerrado $[a, b]$ representa la altura del rectángulo que posee exactamente la misma área bajo la curva que la función en dicho intervalo.
+                        </p>
+                        <div class="p-3 bg-slate-800/80 rounded-lg text-center font-serif text-sm border border-slate-700">
+                            $$f_{prom} = \frac{1}{b - a} \int_{a}^{b} f(x) \, dx$$
+                        </div>
+                    </div>
+
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-blue-500">
+                        <div class="flex items-center gap-2 text-sm font-bold text-blue-400">
+                            <span class="w-7 h-7 rounded-full bg-blue-500/20 flex items-center justify-center text-xs">2</span>
+                            Definición de Parámetros y Longitud del Intervalo
+                        </div>
+                        <p class="text-xs text-slate-300">Identificamos los límites de integración ingresados:</p>
+                        <ul class="list-disc list-inside text-xs text-slate-300 space-y-1 font-mono pl-2">
+                            <li>Función f(x) = ${exprStr}</li>
+                            <li>Límite inferior (a) = ${a}</li>
+                            <li>Límite superior (b) = ${b}</li>
+                            <li>Longitud del intervalo: (b - a) = ${b} - ${a} = ${longitud.toFixed(4)}</li>
+                            <li>Factor multiplicador: \frac{1}{b - a} = \frac{1}{${longitud.toFixed(4)}} \approx ${factor.toFixed(6)}</li>
+                        </ul>
+                    </div>
+
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-blue-500">
+                        <div class="flex items-center gap-2 text-sm font-bold text-blue-400">
+                            <span class="w-7 h-7 rounded-full bg-blue-500/20 flex items-center justify-center text-xs">3</span>
+                            Cálculo Extenso de la Integral Definida $\int_{a}^{b} f(x) \, dx$
+                        </div>
+                        <p class="text-xs text-slate-300">
+                            Planteamos la integral acumulada en el intervalo $[${a}, ${b}]$:
+                        </p>
+                        <div class="p-3 bg-slate-800/80 rounded-lg text-center font-serif text-sm">
+                            $$I = \int_{${a}}^{${b}} \left( ${exprStr} \right) \, dx$$
+                        </div>
+                        <p class="text-xs text-slate-300">
+                            Evaluando minuciosamente mediante integración numérica de alta precisión (Simpson $n=1000$):
+                        </p>
+                        <p class="text-xs font-mono text-emerald-300 text-center bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                            I = \int_{${a}}^{${b}} (${exprStr}) \, dx \approx ${integralVal.toFixed(8)}
+                        </p>
+                    </div>
+
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-emerald-500">
+                        <div class="flex items-center gap-2 text-sm font-bold text-emerald-400">
+                            <span class="w-7 h-7 rounded-full bg-emerald-500/20 flex items-center justify-center text-xs">4</span>
+                            Sustitución Final y Resultado del Valor Promedio
+                        </div>
+                        <p class="text-xs text-slate-300">
+                            Multiplicamos la integral acumulada por el recíproco de la longitud del intervalo:
+                        </p>
+                        <div class="p-4 bg-slate-800/90 rounded-xl text-center font-serif text-sm border border-emerald-500/30 space-y-2">
+                            <div>$$f_{prom} = \frac{1}{${longitud.toFixed(4)}} \cdot \left( ${integralVal.toFixed(6)} \right)$$</div>
+                            <div class="text-lg text-emerald-400 font-bold">$$f_{prom} = \mathbf{${fProm.toFixed(6)}}$$</div>
+                        </div>
+                        <p class="text-xs text-slate-400 italic text-center">
+                            Interpretación geométrica: El área bajo la curva $y = ${exprStr}$ de $x=${a}$ a $x=${b}$ es equivalente al área de un rectángulo con base $L=${longitud.toFixed(4)}$ y altura $H=${fProm.toFixed(6)}$.
+                        </p>
+                    </div>
+                `;
+
+                renderChartPromedio(expr, a, b, fProm);
+                if (window.MathJax) MathJax.typesetPromise();
+
+            } catch (err) {
+                alert("Error al procesar la función: " + err.message);
+            }
+        }
+
+        function renderChartPromedio(expr, a, b, fProm) {
+            const ctx = document.getElementById('promedioChart').getContext('2d');
+            if (meChart) meChart.destroy();
+
+            const labels = [];
+            const dataFx = [];
+            const dataProm = [];
+            
+            const padding = (b - a) * 0.2;
+            const startX = a - padding;
+            const endX = b + padding;
+            const steps = 100;
+            const dx = (endX - startX) / steps;
+
+            for (let i = 0; i <= steps; i++) {
+                const x = startX + i * dx;
+                labels.push(x.toFixed(2));
+                try {
+                    dataFx.push(expr.evaluate({x: x}));
+                } catch {
+                    dataFx.push(null);
+                }
+                dataProm.push(x >= a && x <= b ? fProm : null);
+            }
+
+            meChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'f(x)', data: dataFx, borderColor: '#3b82f6', borderWidth: 2, pointRadius: 0 },
+                        { label: `f_prom = ${fProm.toFixed(4)}`, data: dataProm, borderColor: '#10b981', borderWidth: 2.5, borderDash: [5, 5], pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                        y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+                    },
+                    plugins: { legend: { labels: { color: '#f8fafc' } } }
+                }
+            });
+        }
+
+        // 2. INTEGRAL DEFINIDA (Diego Mejía)
+        function calcularIntegralDefinida() {
+            const exprStr = document.getElementById('def-fx').value;
+            const a = parseFloat(document.getElementById('def-a').value);
+            const b = parseFloat(document.getElementById('def-b').value);
+            const n = parseInt(document.getElementById('def-n').value);
+
+            if (isNaN(a) || isNaN(b) || a >= b || n <= 0 || n % 2 !== 0) {
+                alert("Asegúrate de que a < b y n sea un número PAR para Simpson.");
+                return;
+            }
+
+            try {
+                const expr = math.compile(exprStr);
+                const deltaX = (b - a) / n;
+
+                const xValues = [], fxValues = [], trapCoefs = [], simpCoefs = [];
+
+                for (let i = 0; i <= n; i++) {
+                    const xi = a + i * deltaX;
+                    const fxi = expr.evaluate({x: xi});
+                    xValues.push(xi);
+                    fxValues.push(fxi);
+
+                    trapCoefs.push(i === 0 || i === n ? 1 : 2);
+                    simpCoefs.push(i === 0 || i === n ? 1 : (i % 2 === 1 ? 4 : 2));
+                }
+
+                let sumTrap = 0, sumSimp = 0;
+                let trapTermsStr = [], simpTermsStr = [];
+
+                for (let i = 0; i <= n; i++) {
+                    sumTrap += trapCoefs[i] * fxValues[i];
+                    sumSimp += simpCoefs[i] * fxValues[i];
+
+                    trapTermsStr.push(`${trapCoefs[i]} \\cdot (${fxValues[i].toFixed(4)})`);
+                    simpTermsStr.push(`${simpCoefs[i]} \\cdot (${fxValues[i].toFixed(4)})`);
+                }
+
+                const resTrapecio = (deltaX / 2) * sumTrap;
+                const resSimpson = (deltaX / 3) * sumSimp;
+
+                const highSteps = 2000;
+                const hHigh = (b - a) / highSteps;
+                let sumHigh = expr.evaluate({x: a}) + expr.evaluate({x: b});
+                for (let i = 1; i < highSteps; i++) {
+                    sumHigh += (i % 2 === 0 ? 2 : 4) * expr.evaluate({x: a + i * hHigh});
+                }
+                const resExacto = (hHigh / 3) * sumHigh;
+
+                const errTrap = Math.abs(resExacto - resTrapecio);
+                const errSimp = Math.abs(resExacto - resSimpson);
+
+                document.getElementById('def-res-exacto').innerText = resExacto.toFixed(6);
+                document.getElementById('def-res-trapecio').innerText = resTrapecio.toFixed(6);
+                document.getElementById('def-res-simpson').innerText = resSimpson.toFixed(6);
+
+                document.getElementById('def-err-trapecio').innerText = `Error: ${errTrap.toExponential(2)}`;
+                document.getElementById('def-err-simpson').innerText = `Error: ${errSimp.toExponential(2)}`;
+
+                const tbody = document.getElementById('def-table-body');
+                tbody.innerHTML = '';
+                for (let i = 0; i <= n; i++) {
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-800/60">
+                            <td class="px-3 py-1 text-emerald-400 font-semibold">${i}</td>
+                            <td class="px-3 py-1 font-mono">${xValues[i].toFixed(4)}</td>
+                            <td class="px-3 py-1 font-mono">${fxValues[i].toFixed(4)}</td>
+                            <td class="px-3 py-1">${trapCoefs[i]}</td>
+                            <td class="px-3 py-1">${simpCoefs[i]}</td>
+                        </tr>
+                    `;
+                }
+
+                document.getElementById('def-steps-container').innerHTML = `
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-emerald-500">
+                        <div class="flex items-center gap-2 text-sm font-bold text-emerald-400">
+                            <span class="w-7 h-7 rounded-full bg-emerald-500/20 flex items-center justify-center text-xs">1</span>
+                            Planteamiento de la Integral y Parámetros
+                        </div>
+                        <p class="text-xs text-slate-300">
+                            <strong>Estudiante asignado:</strong> Diego Mejía.<br>
+                            Queremos aproximar la integral definida en el intervalo $[${a}, ${b}]$ dividiéndolo en $n = ${n}$ subintervalos de igual ancho.
+                        </p>
+                        <div class="p-3 bg-slate-800 rounded-lg text-center font-serif text-sm">
+                            $$\Delta x = \frac{b - a}{n} = \frac{${b} - ${a}}{${n}} = \mathbf{${deltaX.toFixed(4)}}$$
+                        </div>
+                    </div>
+
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-emerald-500">
+                        <div class="flex items-center gap-2 text-sm font-bold text-emerald-400">
+                            <span class="w-7 h-7 rounded-full bg-emerald-500/20 flex items-center justify-center text-xs">2</span>
+                            Generación de la Malla de Puntos $x_i$ y Evaluaciones $f(x_i)$
+                        </div>
+                        <p class="text-xs text-slate-300">
+                            Los nodos de integración corresponden a $x_i = a + i \cdot \Delta x$:
+                        </p>
+                        <div class="bg-slate-950 p-3 rounded-lg text-xs font-mono space-y-1 text-slate-300">
+                            ${xValues.map((xVal, idx) => `<div>x_${idx} = ${xVal.toFixed(4)} \u2192 f(x_${idx}) = ${fxValues[idx].toFixed(6)}</div>`).join('')}
+                        </div>
+                    </div>
+
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-emerald-500">
+                        <div class="flex items-center gap-2 text-sm font-bold text-emerald-400">
+                            <span class="w-7 h-7 rounded-full bg-emerald-500/20 flex items-center justify-center text-xs">3</span>
+                            Desglose Detallado: Regla del Trapecio
+                        </div>
+                        <p class="text-xs text-slate-300">
+                            Fórmula: $T_n = \frac{\Delta x}{2} \left[ f(x_0) + 2f(x_1) + 2f(x_2) + \dots + f(x_n) \right]$
+                        </p>
+                        <div class="p-3 bg-slate-800 rounded-lg font-serif text-xs text-slate-200 overflow-x-auto">
+                            $$T_{${n}} = \frac{${deltaX.toFixed(4)}}{2} \left[ ${trapTermsStr.join(' + ')} \right]$$
+                            $$T_{${n}} = ${ (deltaX/2).toFixed(4) } \cdot \left[ ${sumTrap.toFixed(6)} \right] = \mathbf{${resTrapecio.toFixed(6)}}$$
+                        </div>
+                    </div>
+
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-teal-500">
+                        <div class="flex items-center gap-2 text-sm font-bold text-teal-400">
+                            <span class="w-7 h-7 rounded-full bg-teal-500/20 flex items-center justify-center text-xs">4</span>
+                            Desglose Detallado: Regla de Simpson (1/3)
+                        </div>
+                        <p class="text-xs text-slate-300">
+                            Fórmula: $S_n = \frac{\Delta x}{3} \left[ f(x_0) + 4f(x_1) + 2f(x_2) + 4f(x_3) + \dots + f(x_n) \right]$
+                        </p>
+                        <div class="p-3 bg-slate-800 rounded-lg font-serif text-xs text-slate-200 overflow-x-auto">
+                            $$S_{${n}} = \frac{${deltaX.toFixed(4)}}{3} \left[ ${simpTermsStr.join(' + ')} \right]$$
+                            $$S_{${n}} = ${ (deltaX/3).toFixed(4) } \cdot \left[ ${sumSimp.toFixed(6)} \right] = \mathbf{${resSimpson.toFixed(6)}}$$
+                        </div>
+                    </div>
+
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-2 border-indigo-500">
+                        <div class="flex items-center gap-2 text-sm font-bold text-indigo-400">
+                            <span class="w-7 h-7 rounded-full bg-indigo-500/20 flex items-center justify-center text-xs">5</span>
+                            Comparación de Precisión y Errores
+                        </div>
+                        <p class="text-xs text-slate-300">
+                            • Valor Exacto Estimado: <strong>${resExacto.toFixed(6)}</strong><br>
+                            • Error Absoluto Trapecio: <strong>${errTrap.toFixed(8)}</strong><br>
+                            • Error Absoluto Simpson 1/3: <strong>${errSimp.toFixed(8)}</strong> (Notablemente menor por aproximación parabólica).
+                        </p>
+                    </div>
+                `;
+
+                if (window.MathJax) MathJax.typesetPromise();
+
+            } catch (err) {
+                alert("Error en cálculo: " + err.message);
+            }
+        }
+
+        // 3. SUSTITUCIÓN (Guillermo Vicente)
+        const ejemplosSub = [
+            { 
+                titulo: "\\int 2x e^{x^2} dx", 
+                u: "x^2", 
+                du: "2x dx", 
+                intTransformada: "\\int e^u du",
+                intResuelta: "e^u + C",
+                resFinal: "e^{x^2} + C",
+                explicacion: "Se selecciona $u = x^2$ porque su derivada $2x$ está presente multiplicando al diferencial $dx$."
+            },
+            { 
+                titulo: "\\int \\frac{2x}{x^2 + 1} dx", 
+                u: "x^2 + 1", 
+                du: "2x dx", 
+                intTransformada: "\\int \\frac{1}{u} du",
+                intResuelta: "\\ln|u| + C",
+                resFinal: "\\ln(x^2 + 1) + C",
+                explicacion: "Tomamos el denominador $u = x^2 + 1$. Al derivar obtenemos el numerador completo $2x dx$."
+            },
+            { 
+                titulo: "\\int x \\sqrt{x^2 + 4} dx", 
+                u: "x^2 + 4", 
+                du: "2x dx \\implies x dx = \\frac{1}{2} du", 
+                intTransformada: "\\frac{1}{2} \\int u^{1/2} du",
+                intResuelta: "\\frac{1}{2} \\cdot \\frac{2}{3} u^{3/2} + C = \\frac{1}{3} u^{3/2} + C",
+                resFinal: "\\frac{1}{3} (x^2 + 4)^{3/2} + C",
+                explicacion: "Al tomar el argumento del radical $u = x^2 + 4$, el término restante $x dx$ equivale a $\\frac{1}{2} du$."
+            }
+        ];
+
+        function toggleSubMode(mode) {
+            if (mode === 'plantillas') {
+                document.getElementById('sub-mode-plantillas').classList.remove('hidden');
+                document.getElementById('sub-mode-custom').classList.add('hidden');
+                document.getElementById('btn-sub-plantillas').className = "flex-1 py-2 rounded-lg bg-purple-600 text-white";
+                document.getElementById('btn-sub-custom').className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white";
+            } else {
+                document.getElementById('sub-mode-plantillas').classList.add('hidden');
+                document.getElementById('sub-mode-custom').classList.remove('hidden');
+                document.getElementById('btn-sub-plantillas').className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white";
+                document.getElementById('btn-sub-custom').className = "flex-1 py-2 rounded-lg bg-purple-600 text-white";
+                activeInputId = 'sub-custom-fx';
+            }
+        }
+
+        function cargarEjemploSub(index) {
+            const ej = ejemplosSub[index];
+            document.getElementById('sub-resumen-box').innerHTML = `<div class="text-sm font-serif text-white">$${ej.titulo}$</div>`;
+
+            document.getElementById('sub-steps-container').innerHTML = `
+                <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-purple-500">
+                    <div class="flex items-center gap-2 text-sm font-bold text-purple-400">
+                        <span class="w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center text-xs">1</span>
+                        Identificación y Estrategia de Sustitución
+                    </div>
+                    <p class="text-xs text-slate-300"><strong>Responsable:</strong> Guillermo Vicente</p>
+                    <p class="text-xs text-slate-300">${ej.explicacion}</p>
+                    <div class="p-3 bg-slate-800 rounded-lg text-center font-serif text-sm">
+                        $$\\text{Integral original: } ${ej.titulo}$$
+                    </div>
+                </div>
+
+                <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-purple-500">
+                    <div class="flex items-center gap-2 text-sm font-bold text-purple-400">
+                        <span class="w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center text-xs">2</span>
+                        Elección de Variable $u$ y Diferenciación Detallada
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                        <div class="p-3 bg-slate-800/80 rounded-lg border border-slate-700 font-serif">
+                            <span class="text-purple-300 font-bold block mb-1">Variable $u$:</span>
+                            $$u = ${ej.u}$$
+                        </div>
+                        <div class="p-3 bg-slate-800/80 rounded-lg border border-slate-700 font-serif">
+                            <span class="text-purple-300 font-bold block mb-1">Diferencial $du$:</span>
+                            $$du = ${ej.du}$$
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-purple-500">
+                    <div class="flex items-center gap-2 text-sm font-bold text-purple-400">
+                        <span class="w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center text-xs">3</span>
+                        Transformación de la Integral a la Variable $u$
+                    </div>
+                    <p class="text-xs text-slate-300">
+                        Reemplazamos todas las expresiones en función de $x$ por sus equivalentes inmediatos en $u$:
+                    </p>
+                    <div class="p-3 bg-slate-800 rounded-lg text-center font-serif text-sm text-purple-200">
+                        $$${ej.titulo} \\longrightarrow ${ej.intTransformada}$$
+                    </div>
+                </div>
+
+                <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-pink-500">
+                    <div class="flex items-center gap-2 text-sm font-bold text-pink-400">
+                        <span class="w-7 h-7 rounded-full bg-pink-500/20 flex items-center justify-center text-xs">4</span>
+                        Integración en Variable $u$ y Sustitución Inversa
+                    </div>
+                    <p class="text-xs text-slate-300">1. Integramos con respecto a $u$:</p>
+                    <div class="p-2.5 bg-slate-800 rounded text-center font-serif text-xs">
+                        $$${ej.intTransformada} = ${ej.intResuelta}$$
+                    </div>
+                    <p class="text-xs text-slate-300">2. Retornamos a la variable original $x$ sustituyendo $u = ${ej.u}$:</p>
+                    <div class="p-4 bg-purple-950/40 border border-purple-500/30 rounded-xl text-center font-serif text-base text-purple-300 font-bold">
+                        $$${ej.titulo} = \mathbf{${ej.resFinal}}$$
+                    </div>
+                </div>
+            `;
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        function resolverSubCustom() {
+            const fx = document.getElementById('sub-custom-fx').value;
+            const u = document.getElementById('sub-custom-u').value;
+
+            document.getElementById('sub-resumen-box').innerHTML = `<div class="text-xs text-purple-300 font-serif">$$\\int (${fx}) dx$$</div>`;
+
+            document.getElementById('sub-steps-container').innerHTML = `
+                <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-purple-500">
+                    <div class="flex items-center gap-2 text-sm font-bold text-purple-400">
+                        <span class="w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center text-xs">1</span>
+                        Planteamiento de la Sustitución Personalizada
+                    </div>
+                    <p class="text-xs text-slate-300"><strong>Responsable:</strong> Guillermo Vicente</p>
+                    <p class="text-xs text-slate-300">Integral propuesta: $\\int (${fx}) \\, dx$</p>
+                    <div class="p-3 bg-slate-800 rounded-lg text-center font-serif text-sm">
+                        $$u = ${u}$$
+                    </div>
+                </div>
+
+                <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-purple-500">
+                    <div class="flex items-center gap-2 text-sm font-bold text-purple-400">
+                        <span class="w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center text-xs">2</span>
+                        Cálculo del Diferencial $du$
+                    </div>
+                    <p class="text-xs text-slate-300">Derivando $u = ${u}$ con respecto a $x$:</p>
+                    <div class="p-3 bg-slate-800 rounded-lg text-center font-serif text-sm">
+                        $$\\frac{du}{dx} = \\frac{d}{dx}\\left(${u}\\right) \\implies du = \\left(\\frac{d}{dx}(${u})\\right) dx$$
+                    </div>
+                </div>
+
+                <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-purple-500">
+                    <div class="flex items-center gap-2 text-sm font-bold text-purple-400">
+                        <span class="w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center text-xs">3</span>
+                        Reemplazo en la Integral Incondicional
+                    </div>
+                    <p class="text-xs text-slate-300">Sustituye la expresión $u = ${u}$ y despeja $dx = \\frac{du}{u'}$ para cancelar los términos restantes en $x$.</p>
+                </div>
+            `;
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        // 4. POR PARTES (Sharon Alvarado)
+        const ejemplosPartes = [
+            { 
+                titulo: "\\int x e^x dx", 
+                u: "x", 
+                dv: "e^x dx", 
+                du: "dx", 
+                v: "e^x", 
+                vdu: "\\int e^x dx",
+                intVduResuelta: "e^x",
+                resFinal: "x e^x - e^x + C = e^x(x - 1) + C",
+                explicacion: "Siguiendo la regla LIATE, la función Algebraica $x$ tiene prioridad para $u$ sobre la Exponencial $e^x$."
+            },
+            { 
+                titulo: "\\int x \\ln(x) dx", 
+                u: "\\ln(x)", 
+                dv: "x dx", 
+                du: "\\frac{1}{x} dx", 
+                v: "\\frac{x^2}{2}", 
+                vdu: "\\int \\frac{x^2}{2} \\cdot \\frac{1}{x} dx = \\frac{1}{2} \\int x dx",
+                intVduResuelta: "\\frac{1}{2} \\cdot \\frac{x^2}{2} = \\frac{x^2}{4}",
+                resFinal: "\\frac{x^2 \\ln(x)}{2} - \\frac{x^2}{4} + C",
+                explicacion: "Por LIATE, las Logarítmicas $\\ln(x)$ preceden a las Algebraicas $x$, por lo que $u = \\ln(x)$."
+            },
+            { 
+                titulo: "\\int x \\cos(x) dx", 
+                u: "x", 
+                dv: "\\cos(x) dx", 
+                du: "dx", 
+                v: "\\sin(x)", 
+                vdu: "\\int \\sin(x) dx",
+                intVduResuelta: "-\\cos(x)",
+                resFinal: "x \\sin(x) - (-\\cos(x)) + C = x \\sin(x) + \\cos(x) + C",
+                explicacion: "Por LIATE, la Algebraica $x$ se asigna a $u$ y la Trigonométrica $\\cos(x) dx$ a $dv$."
+            }
+        ];
+
+        function togglePartesMode(mode) {
+            if (mode === 'plantillas') {
+                document.getElementById('partes-mode-plantillas').classList.remove('hidden');
+                document.getElementById('partes-mode-custom').classList.add('hidden');
+                document.getElementById('btn-partes-plantillas').className = "flex-1 py-2 rounded-lg bg-amber-600 text-white";
+                document.getElementById('btn-partes-custom').className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white";
+            } else {
+                document.getElementById('partes-mode-plantillas').classList.add('hidden');
+                document.getElementById('partes-mode-custom').classList.remove('hidden');
+                document.getElementById('btn-partes-plantillas').className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white";
+                document.getElementById('btn-partes-custom').className = "flex-1 py-2 rounded-lg bg-amber-600 text-white";
+                activeInputId = 'partes-custom-u';
+            }
+        }
+
+        function cargarEjemploPartes(index) {
+            const ej = ejemplosPartes[index];
+            document.getElementById('partes-resumen-box').innerHTML = `<div class="text-sm font-serif text-white">$${ej.titulo}$</div>`;
+
+            document.getElementById('partes-steps-container').innerHTML = `
+                <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-amber-500">
+                    <div class="flex items-center gap-2 text-sm font-bold text-amber-400">
+                        <span class="w-7 h-7 rounded-full bg-amber-500/20 flex items-center justify-center text-xs">1</span>
+                        Análisis LIATE y Asignación de Componentes
+                    </div>
+                    <p class="text-xs text-slate-300"><strong>Responsable:</strong> Sharon Alvarado</p>
+                    <p class="text-xs text-slate-300">${ej.explicacion}</p>
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div class="p-3 bg-slate-800 rounded border border-slate-700 font-serif">
+                            <span class="text-amber-400 font-bold block mb-1">Diferenciación (Derivar $u$):</span>
+                            $$u = ${ej.u} \implies du = ${ej.du}$$
+                        </div>
+                        <div class="p-3 bg-slate-800 rounded border border-slate-700 font-serif">
+                            <span class="text-amber-400 font-bold block mb-1">Integración (Integrar $dv$):</span>
+                            $$dv = ${ej.dv} \implies v = ${ej.v}$$
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-amber-500">
+                    <div class="flex items-center gap-2 text-sm font-bold text-amber-400">
+                        <span class="w-7 h-7 rounded-full bg-amber-500/20 flex items-center justify-center text-xs">2</span>
+                        Aplicación de la Fórmula Estándar
+                    </div>
+                    <div class="p-3 bg-slate-800/80 rounded-lg text-center font-serif text-sm">
+                        $$\int u \, dv = u \cdot v - \int v \, du$$
+                    </div>
+                    <p class="text-xs text-slate-300">Sustituyendo nuestros cuatro componentes:</p>
+                    <div class="p-3 bg-slate-800 rounded-lg text-center font-serif text-xs text-amber-200">
+                        $$${ej.titulo} = \left(${ej.u}\right)\left(${ej.v}\right) - ${ej.vdu}$$
+                    </div>
+                </div>
+
+                <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-orange-500">
+                    <div class="flex items-center gap-2 text-sm font-bold text-orange-400">
+                        <span class="w-7 h-7 rounded-full bg-orange-500/20 flex items-center justify-center text-xs">3</span>
+                        Resolución de la Integral Restante y Resultado Final
+                    </div>
+                    <p class="text-xs text-slate-300">Calculamos la integral remanente $\int v \, du$:</p>
+                    <div class="p-2.5 bg-slate-800 rounded text-center font-serif text-xs">
+                        $$${ej.vdu} = ${ej.intVduResuelta}$$
+                    </div>
+                    <p class="text-xs text-slate-300">Uniendo todo y añadiendo la constante de integración $C$:</p>
+                    <div class="p-4 bg-amber-950/40 border border-amber-500/30 rounded-xl text-center font-serif text-base text-amber-300 font-bold">
+                        $$${ej.titulo} = \mathbf{${ej.resFinal}}$$
+                    </div>
+                </div>
+            `;
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        function resolverPartesCustom() {
+            const u = document.getElementById('partes-custom-u').value;
+            const dv = document.getElementById('partes-custom-dv').value;
+
+            document.getElementById('partes-steps-container').innerHTML = `
+                <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-amber-500">
+                    <div class="flex items-center gap-2 text-sm font-bold text-amber-400">
+                        <span class="w-7 h-7 rounded-full bg-amber-500/20 flex items-center justify-center text-xs">1</span>
+                        Entrada Personalizada y Fórmula
+                    </div>
+                    <p class="text-xs text-slate-300"><strong>Responsable:</strong> Sharon Alvarado</p>
+                    <p class="text-xs text-slate-300">Término $u = ${u}$ y término $dv = ${dv}$</p>
+                </div>
+
+                <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-amber-500">
+                    <div class="flex items-center gap-2 text-sm font-bold text-amber-400">
+                        <span class="w-7 h-7 rounded-full bg-amber-500/20 flex items-center justify-center text-xs">2</span>
+                        Derivación e Integración Parcial
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div class="p-3 bg-slate-800 rounded">Derivar $u$: $du = \frac{d}{dx}(${u}) dx$</div>
+                        <div class="p-3 bg-slate-800 rounded">Integrar $dv$: $v = \int (${dv})$</div>
+                    </div>
+                    <div class="p-3 bg-slate-800 rounded text-center font-serif text-sm">
+                        $$\int u \, dv = (${u}) \cdot v - \int v \, du$$
+                    </div>
+                </div>
+            `;
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        // 5. SUSTITUCIÓN TRIGONOMÉTRICA (Juan De León)
+        function seleccionarCasoTrig(caso) {
+            selectedTrigCase = caso;
+            for (let i = 1; i <= 3; i++) {
+                const btn = document.getElementById(`btn-caso-${i}`);
+                if (i === caso) {
+                    btn.classList.add('border-rose-500/50');
+                    btn.classList.remove('border-slate-700');
+                } else {
+                    btn.classList.remove('border-rose-500/50');
+                    btn.classList.add('border-slate-700');
+                }
+            }
+            generarSustitucionTrig();
+        }
+
+        function generarSustitucionTrig() {
+            const a = parseFloat(document.getElementById('trig-a').value) || 3;
+            const a2 = a * a;
+
+            if (selectedTrigCase === 1) {
+                renderTrianguloSVG("x", `\\sqrt{${a2}-x^2}`, `${a}`);
+
+                document.getElementById('trig-resumen-box').innerHTML = `<div class="text-sm font-serif text-white">$$\\int \\frac{x^2}{\\sqrt{${a2} - x^2}} \\, dx$$</div>`;
+
+                document.getElementById('trig-steps-container').innerHTML = `
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-rose-500">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <span class="text-sm font-bold text-rose-400">Caso 1: $\\int \\frac{x^2}{\\sqrt{${a2} - x^2}} dx$</span>
+                            <span class="text-xs text-slate-400 font-bold">Juan De León</span>
+                        </div>
+                        <p class="text-xs text-slate-300">Identificamos los elementos iniciales del triángulo y la sustitución:</p>
+                        <div class="flex flex-wrap gap-3 my-2 text-xs">
+                            <span class="red-highlight">a = ${a}</span>
+                            <span class="red-highlight">x = ${a}\\operatorname{sen}\\theta</span>
+                            <span class="red-highlight">dx = ${a}\\cos\\theta \, d\\theta</span>
+                        </div>
+                        <div class="p-3 bg-slate-800/80 rounded-lg text-xs font-serif space-y-1 border border-slate-700">
+                            <div>$$\\cos\\theta = \\frac{\\sqrt{${a2} - x^2}}{${a}} \\implies \\sqrt{${a2} - x^2} = ${a}\\cos\\theta$$</div>
+                            <div class="text-slate-400 text-[11px] font-sans">Identidad Pitagórica auxiliar: $\\operatorname{sen}^2\\theta = \\frac{1 - \\cos(2\\theta)}{2}$</div>
+                        </div>
+                    </div>
+
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-rose-500">
+                        <div class="flex items-center gap-2 text-sm font-bold text-rose-400">
+                            <span class="w-7 h-7 rounded-full bg-rose-500/20 flex items-center justify-center text-xs">2</span>
+                            Sustitución Total en la Integral de Entrada
+                        </div>
+                        <div class="p-4 bg-slate-800/90 rounded-xl text-center font-serif text-sm space-y-2">
+                            <div>$$\\int \\frac{(${a}\\operatorname{sen}\\theta)^2}{${a}\\cos\\theta} \\cdot ${a}\\cos\\theta \, d\\theta$$</div>
+                            <div class="text-rose-300">$$= \\int \\frac{${a2}\\operatorname{sen}^2\\theta}{${a}\\cos\\theta} \\cdot ${a}\\cos\\theta \, d\\theta$$</div>
+                            <div>$$= ${a2} \\int \\operatorname{sen}^2\\theta \, d\\theta$$</div>
+                        </div>
+                    </div>
+
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-amber-500">
+                        <div class="flex items-center gap-2 text-sm font-bold text-amber-400">
+                            <span class="w-7 h-7 rounded-full bg-amber-500/20 flex items-center justify-center text-xs">3</span>
+                            Aplicación de la Identidad Trigonométrica y Cambio de Variable Interno
+                        </div>
+                        <p class="text-xs text-slate-300">Reemplazamos $\\operatorname{sen}^2\\theta = \\frac{1 - \\cos(2\\theta)}{2}$:</p>
+                        <div class="p-3 bg-slate-800/80 rounded-lg text-center font-serif text-sm space-y-2">
+                            <div>$$${a2} \\int \\frac{1 - \\cos(2\\theta)}{2} \, d\\theta$$</div>
+                            <div>$$= ${a2} \\cdot \\frac{1}{2} \\int d\\theta - ${a2} \\cdot \\frac{1}{2} \\int \\cos(2\\theta) \, d\\theta$$</div>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-lg text-xs font-mono border border-slate-800 space-y-1 text-emerald-400">
+                            <div class="text-slate-300 font-sans font-bold">Cambio de variable auxiliar para $\\cos(2\\theta)$:</div>
+                            <div>u = 2\\theta \u2192 du = 2 d\\theta \u2192 \\frac{du}{2} = d\\theta</div>
+                            <div>\\int \\cos(2\\theta) d\\theta = \\frac{1}{2} \\int \\cos(u) du = \\frac{1}{2} \\operatorname{sen}(2\\theta)</div>
+                        </div>
+                    </div>
+
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-purple-500">
+                        <div class="flex items-center gap-2 text-sm font-bold text-purple-400">
+                            <span class="w-7 h-7 rounded-full bg-purple-500/20 flex items-center justify-center text-xs">4</span>
+                            Integración Parcial y Sustitución de Identidad del Ámbar
+                        </div>
+                        <div class="p-3 bg-slate-800 rounded-lg text-center font-serif text-sm">
+                            $$\\frac{${a2}}{2} \\theta - \\frac{${a2}}{2} \\cdot \\frac{1}{2} \\operatorname{sen}(2\\theta) = \\frac{${a2}}{2} \\theta - \\frac{${a2}}{4} \\operatorname{sen}(2\\theta)$$
+                        </div>
+                        <div class="text-xs font-semibold text-rose-400 text-center my-1">
+                            <span class="red-highlight">Sustituyo la identidad: $\\operatorname{sen}(2\\theta) = 2\\operatorname{sen}\\theta\\cos\\theta$</span>
+                        </div>
+                        <div class="p-3 bg-slate-800 rounded-lg text-center font-serif text-sm">
+                            $$\\frac{${a2}}{2} \\theta - \\frac{${a2}}{4} \\cdot 2\\operatorname{sen}\\theta\\cos\\theta = \\frac{${a2}}{2} \\theta - \\frac{${a2}}{2} \\operatorname{sen}\\theta\\cos\\theta$$
+                        </div>
+                    </div>
+
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-rose-500">
+                        <div class="flex items-center gap-2 text-sm font-bold text-rose-400">
+                            <span class="w-7 h-7 rounded-full bg-rose-500/20 flex items-center justify-center text-xs">5</span>
+                            Sustitución Final De Vuelta a la Variable $x$ y Respuesta
+                        </div>
+                        <p class="text-xs text-slate-300">Del triángulo rectángulo inicial:</p>
+                        <ul class="list-disc list-inside text-xs font-mono text-slate-300 pl-2 space-y-1">
+                            <li>x = ${a}\\operatorname{sen}\\theta \\implies \\operatorname{sen}\\theta = \\frac{x}{${a}} \\implies \\theta = \\operatorname{sen}^{-1}\\left(\\frac{x}{${a}}\\right)</li>
+                            <li>\\cos\\theta = \\frac{\\sqrt{${a2}-x^2}}{${a}}</li>
+                        </ul>
+                        <div class="p-3 bg-slate-800 rounded-lg text-center font-serif text-sm space-y-2">
+                            <div>$$\\frac{${a2}}{2} \\cdot \\operatorname{sen}^{-1}\\left(\\frac{x}{${a}}\\right) - \\frac{${a2}}{2} \\cdot \\left(\\frac{x}{${a}}\\right) \\cdot \\left(\\frac{\\sqrt{${a2}-x^2}}{${a}}\\right)$$</div>
+                        </div>
+                        <div class="text-center pt-2">
+                            <div class="response-box font-serif">
+                                R// \\quad \\frac{${a2}}{2} \\operatorname{sen}^{-1}\\left(\\frac{x}{${a}}\\right) - \\frac{x\\sqrt{${a2}-x^2}}{2} + C
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (selectedTrigCase === 2) {
+                renderTrianguloSVG("x", `${a}`, `\\sqrt{${a2}+x^2}`);
+
+                document.getElementById('trig-resumen-box').innerHTML = `<div class="text-sm font-serif text-white">$$\\int \\sqrt{${a2} + x^2} \\, dx$$</div>`;
+
+                document.getElementById('trig-steps-container').innerHTML = `
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-rose-500">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <span class="text-sm font-bold text-rose-400">Caso 2: $\\sqrt{a^2 + x^2}$</span>
+                            <span class="text-xs text-slate-400 font-bold">Juan De León</span>
+                        </div>
+                        <div class="flex flex-wrap gap-3 my-2 text-xs">
+                            <span class="red-highlight">a = ${a}</span>
+                            <span class="red-highlight">x = ${a}\\tan\\theta</span>
+                            <span class="red-highlight">dx = ${a}\\sec^2\\theta \, d\\theta</span>
+                        </div>
+                        <div class="p-3 bg-slate-800 rounded-lg text-xs font-serif">
+                            $$\\sqrt{${a2} + x^2} = ${a}\\sec\\theta$$
+                        </div>
+                        <div class="text-center pt-2">
+                            <div class="response-box font-serif">
+                                R// \\quad \\frac{x\\sqrt{${a2}+x^2}}{2} + \\frac{${a2}}{2} \\ln|\\sqrt{${a2}+x^2} + x| + C
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                renderTrianguloSVG(`\\sqrt{x^2-${a2}}`, `${a}`, "x");
+
+                document.getElementById('trig-resumen-box').innerHTML = `<div class="text-sm font-serif text-white">$$\\int \\sqrt{x^2 - ${a2}} \\, dx$$</div>`;
+
+                document.getElementById('trig-steps-container').innerHTML = `
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-rose-500">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <span class="text-sm font-bold text-rose-400">Caso 3: $\\sqrt{x^2 - a^2}$</span>
+                            <span class="text-xs text-slate-400 font-bold">Juan De León</span>
+                        </div>
+                        <div class="flex flex-wrap gap-3 my-2 text-xs">
+                            <span class="red-highlight">a = ${a}</span>
+                            <span class="red-highlight">x = ${a}\\sec\\theta</span>
+                            <span class="red-highlight">dx = ${a}\\sec\\theta\\tan\\theta \, d\\theta</span>
+                        </div>
+                        <div class="p-3 bg-slate-800 rounded-lg text-xs font-serif">
+                            $$\\sqrt{x^2 - ${a2}} = ${a}\\tan\\theta$$
+                        </div>
+                        <div class="text-center pt-2">
+                            <div class="response-box font-serif">
+                                R// \\quad \\frac{x\\sqrt{x^2-${a2}}}{2} - \\frac{${a2}}{2} \\ln|x + \\sqrt{x^2-${a2}}| + C
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+// ... existing code me
