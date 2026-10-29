@@ -1345,6 +1345,131 @@
             calcularValorPromedio();
             generarSustitucionTrig();
         };
+
+        // ===== FUNCIONES CORREGIDAS DE NAVEGACIÓN Y DIBUJO =====
+        
+        // Función principal para cambiar de pestaña/tema
+        function switchTab(tabId) {
+            // Ocultar todas las secciones
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('block');
+            });
+
+            // Desactivar estilos de todas las pestañas
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => {
+                tab.className = "tab-btn px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-2.5 transition-all text-slate-400 hover:text-white hover:bg-slate-700/50";
+            });
+
+            // Mostrar la sección seleccionada
+            const targetSection = document.getElementById(`sec-${tabId}`);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+                targetSection.classList.add('block');
+            }
+
+            // Activar visualmente la pestaña correspondiente
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            if (activeTab) {
+                activeTab.className = "tab-btn active px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-2.5 transition-all bg-blue-600 text-white shadow-md shadow-blue-600/30";
+            }
+
+            // Ejecutar cálculos automáticos al abrir la pestaña por primera vez
+            if (tabId === 'promedio') calcularValorPromedio();
+            if (tabId === 'definida') calcularIntegralDefinida();
+            if (tabId === 'sustitucion') resolverSubCustom();
+            if (tabId === 'partes') resolverPartesCustom();
+            if (tabId === 'trig') generarSustitucionTrig();
+            if (tabId === 'custom') procesarCustomFunction();
+
+            // Re-renderizar fórmulas matemáticas LaTeX con MathJax
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        // Renderizado del triángulo SVG para Juan De León (Sustitución Trigonométrica)
+        function renderTrianguloSVG(opuesto, adyacente, hipotenusa) {
+            const svg = document.getElementById('trig-triangle-svg');
+            if (!svg) return;
+
+            svg.innerHTML = `
+                <!-- Triángulo rectángulo principal -->
+                <polygon points="50,150 250,150 250,30" fill="rgba(244, 63, 94, 0.1)" stroke="#f43f5e" stroke-width="3" stroke-linejoin="round"/>
+                
+                <!-- Símbolo de Ángulo Recto (90°) -->
+                <path d="M 235 150 L 235 135 L 250 135" fill="none" stroke="#f43f5e" stroke-width="2"/>
+                
+                <!-- Símbolo de Ángulo Theta (θ) -->
+                <path d="M 80 150 A 30 30 0 0 0 92 135" fill="none" stroke="#fb7185" stroke-width="2"/>
+                <text x="100" y="143" fill="#fb7185" font-size="14" font-weight="bold" font-family="serif">θ</text>
+                
+                <!-- Etiquetas de los Lados del Triángulo -->
+                <!-- Cateto Adyacente (Base) -->
+                <text x="150" y="172" fill="#e2e8f0" font-size="13" font-weight="bold" text-anchor="middle" font-family="serif">$${adyacente}$</text>
+                
+                <!-- Cateto Opuesto (Altura) -->
+                <text x="268" y="95" fill="#e2e8f0" font-size="13" font-weight="bold" text-anchor="start" font-family="serif">$${opuesto}$</text>
+                
+                <!-- Hipotenusa (Diagonal) -->
+                <text x="135" y="80" fill="#f43f5e" font-size="13" font-weight="bold" text-anchor="end" font-family="serif">$${hipotenusa}$</text>
+            `;
+        }
+
+        // Procesador de Función Personalizada
+        function procesarCustomFunction() {
+            const fxStr = document.getElementById('custom-fx').value;
+            const a = parseFloat(document.getElementById('custom-a').value) || 0;
+            const b = parseFloat(document.getElementById('custom-b').value) || 2;
+            const steps = document.getElementById('custom-steps-container');
+
+            document.getElementById('custom-formula-display').innerHTML = `$$\\int_{${a}}^{${b}} (${fxStr}) \\, dx$$`;
+
+            try {
+                const expr = math.compile(fxStr);
+                const fa = expr.evaluate({x: a});
+                const fmid = expr.evaluate({x: (a + b) / 2});
+                const fb = expr.evaluate({x: b});
+
+                document.getElementById('custom-points-grid').innerHTML = `
+                    <div class="bg-slate-800 p-2 rounded">f(${a}) = ${fa.toFixed(4)}</div>
+                    <div class="bg-slate-800 p-2 rounded">f(${((a+b)/2).toFixed(2)}) = ${fmid.toFixed(4)}</div>
+                    <div class="bg-slate-800 p-2 rounded">f(${b}) = ${fb.toFixed(4)}</div>
+                `;
+
+                // Método de Simpson para estimación numérica
+                const n = 100;
+                const h = (b - a) / n;
+                let sum = expr.evaluate({x: a}) + expr.evaluate({x: b});
+                for (let i = 1; i < n; i++) {
+                    const x = a + i * h;
+                    sum += (i % 2 === 0 ? 2 : 4) * expr.evaluate({x: x});
+                }
+                const res = (h / 3) * sum;
+
+                steps.innerHTML = `
+                    <div class="step-card bg-slate-900 p-5 rounded-xl space-y-3 border-indigo-500">
+                        <div class="flex items-center gap-2 text-sm font-bold text-indigo-400">
+                            <span class="w-7 h-7 rounded-full bg-indigo-500/20 flex items-center justify-center text-xs">1</span>
+                            Análisis Integral y Evaluación Numérica
+                        </div>
+                        <p class="text-xs text-slate-300">Función ingresada: $f(x) = ${fxStr}$ evaluada en el intervalo $[${a}, ${b}]$.</p>
+                        <div class="notebook-box text-center text-sm font-serif text-indigo-300">
+                            $$\\int_{${a}}^{${b}} (${fxStr}) \\, dx \\approx ${res.toFixed(6)}$$
+                        </div>
+                        <div class="text-center pt-2">
+                            <span class="response-box">R// I \\approx ${res.toFixed(4)}</span>
+                        </div>
+                    </div>
+                `;
+            } catch (e) {
+                steps.innerHTML = `<div class="p-4 bg-rose-950/40 border border-rose-500/50 rounded-xl text-xs text-rose-300">Sintaxis no válida. Revisa la expresión matemática ingresada.</div>`;
+            }
+
+            if (window.MathJax) MathJax.typesetPromise();
+        }
     </script>
 </body>
 </html>
